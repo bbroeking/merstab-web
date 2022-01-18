@@ -1,0 +1,38 @@
+.navRow {
+    display: flex;
+    flex-direction: row;
+    background-color: #0D0D0D;
+    height: 96px;
+}
+
+.icon {
+    flex: 0 0 20%;
+}
+.navTabs {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.navItem {
+    padding: 10px 15px;
+}
+
+.active {
+    border-bottom: 1px solid #DC5355;
+}
+
+.connectWallet {
+    flex: 0 0 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.walletButton {
+    padding: 16px 32px;
+    background: #DC5355;
+    border-radius: 2px;
+}
