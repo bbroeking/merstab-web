@@ -1,0 +1,21 @@
+.footerRow {
+    display: flex;
+    flex: 0 0 100%;
+    position: fixed;
+    bottom: 0;
+    height: 55px;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    padding: 32px;
+    border-top: 1px solid #474747;
+}
+
+.title {
+    color: rgba(255, 255, 255, 0.74);
+}
+.icons {
+    display: flex;
+    width: 120px;
+    justify-content: space-between;
+}

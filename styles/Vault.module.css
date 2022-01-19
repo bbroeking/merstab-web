@@ -1,0 +1,23 @@
+.vaultSection {
+    display: flex;
+    flex-direction: column;
+    padding: 0px 10%;
+    background-color: white;
+    flex-grow: 1;
+    align-items: stretch;
+    height: calc(100vh - 141px);
+}
+
+.vaultDeposits {
+    flex: 0 1 22%;
+}
+
+.vaultPerformance {
+    flex: 0 1 22%;
+    border: 2px solid #F7931A;
+    border-radius: 4px;
+}
+
+.vaultTransactions {
+    flex: 1 0 auto;
+}

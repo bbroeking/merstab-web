@@ -1,8 +1,5 @@
 import type { NextPage } from 'next';
-import { WalletDisconnectButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import Head from 'next/head';
-import Image from 'next/image';
-import Link from 'next/link';
 
 const Home: NextPage = () => {
     return (

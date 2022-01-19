@@ -1,0 +1,54 @@
+.transferSection {
+    flex: 0 0 50%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.innerTransfer {
+    background-color: #1A1A1A;
+    ;
+    border: 1px solid #474747;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+}
+
+.buttonRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.displayRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 30px;
+}
+
+.transactionButton {
+    height: 55px;
+    width: 220px;
+    border: 1px solid #474747;
+    border-radius: 4px;
+}
+
+.amountField {
+    width: 80%;
+    padding: 5px;
+    margin: 5px 10%;
+    border-radius: 2px;
+    background-color: coral;
+}
+
+.actionButton {
+    width: 70%;
+    height: 48px;
+    margin: 5px 15%;
+    background: #DC5355;
+    border-radius: 2px;
+}
+
+.active {
+    border-bottom: 1px solid #DC5355;
+}

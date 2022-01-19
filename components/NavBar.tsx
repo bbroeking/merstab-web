@@ -24,8 +24,8 @@ const NavBar = () => {
             </div>
 
             <div className={styles.connectWallet}>
-                <WalletMultiButton className={styles.walletButton}>Connect Wallet</WalletMultiButton>
-                <img src="Wallet.svg" alt="An SVG of an eye" />
+                <WalletMultiButton startIcon={<img src="svg/wallet.svg" alt="wallet icon" height={8} width={8}/>}
+                className={styles.walletButton}>Connect Wallet</WalletMultiButton>
 
             </div>
 
