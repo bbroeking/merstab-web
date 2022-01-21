@@ -1,0 +1,31 @@
+.vaultDepositInfo {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+}
+
+@media (max-width: 770px) {
+    .vaultDepositInfo {
+        flex-direction: column;
+        padding: 30px 0px;
+    }
+    .infoAssetIcon {
+        align-items: unset;
+        padding-bottom: 30px;
+    }
+    .vaultDepositsStatus {
+        flex: unset;
+        align-self: unset;
+    }
+}
+
+.infoAssetIcon {
+    display: flex;
+    align-items: center;
+}
+
+.vaultDepositStatus {
+    align-self: center;
+    flex: 0 0 40%;
+}

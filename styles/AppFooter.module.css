@@ -1,7 +1,6 @@
 .footerRow {
     display: flex;
     flex: 0 0 100%;
-    position: fixed;
     bottom: 0;
     height: 55px;
     align-items: center;
@@ -14,6 +13,7 @@
 .title {
     color: rgba(255, 255, 255, 0.74);
 }
+
 .icons {
     display: flex;
     width: 120px;

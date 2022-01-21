@@ -4,29 +4,40 @@ import styles from '../styles/VaultTransfer.module.css';
 
 const VaultTransfer = () => {
     const [amount, setAmount] = useState(1);
-    const [depositActive, setDepositActive] = useState<boolean>(true); 
+    const [depositActive, setDepositActive] = useState<boolean>(true);
     const onInputChange = (event: any) => {
         setAmount(event.target.value);
+    }
+    const onTabToggle = (toggle: boolean) => {
+        setDepositActive(toggle);
     }
     return (
         <div className={styles.transferSection}>
             <div className={styles.innerTransfer}>
                 <Row className={styles.buttonRow}>
-                    <Button className={`${styles.transactionButton} ${depositActive ? styles.active : ""}`}>Deposit</Button>
-                    <Button className={`${styles.transactionButton} ${!depositActive ? styles.active : ""}`}>Withdraw</Button>
+                    <Button
+                        onClick={() => onTabToggle(true)}
+                        className={`${styles.transactionButton} ${depositActive ? styles.active : ""}`}>Deposit</Button>
+                    <Button
+                        onClick={() => onTabToggle(false)}
+                        className={`${styles.transactionButton} ${!depositActive ? styles.active : ""}`}>Withdraw</Button>
                 </Row>
-                <Row className={styles.displayRow}>
+                <Row className={styles.positionRow}>
                     <Col>Your position:</Col>
                     <Col>0.0 USDC</Col>
                 </Row>
                 <Row>
-                    <input className={styles.amountField} value={amount} onChange={onInputChange}></input>
+                    <div className={styles.valueInputRow}>
+                        <Button className={styles.maxButton}>MAX</Button>
+                        <input className={styles.amountField} value={amount} onChange={onInputChange}></input>
+                        <div className={styles.currency}>USDC</div>
+                    </div>
                 </Row>
-                <Row className={styles.displayRow}>
+                <Row className={`${styles.walletBalanceRow} ${styles.walletBalance}`}>
                     <Row>Wallet balance: </Row>
                     <Row>0.0 USDC</Row>
                 </Row>
-                <Row>
+                <Row className={styles.displayRow}>
                     <Button className={styles.actionButton}>DEPOSIT</Button>
                 </Row>
             </div>

@@ -9,6 +9,7 @@
 .icon {
     flex: 0 0 20%;
 }
+
 .navTabs {
     flex: 1 1 auto;
     display: flex;
@@ -34,6 +35,13 @@
 
 .walletButton {
     padding: 16px 32px;
-    background: #DC5355;
+    background: #DC5355 !important;
     border-radius: 2px;
+    margin-right: 10px;
+}
+
+@media (max-width: 1000px) {
+    .walletButton {
+        display: none !important;
+    }
 }

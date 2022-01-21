@@ -16,7 +16,7 @@ const Vault = () => {
             <div className={styles.vaultPerformance}>
                 <VaultPerformanceInfo></VaultPerformanceInfo>
             </div>
-            <div style={{ display: 'flex' }} className={styles.vaultTransactions}>
+            <div className={styles.vaultTransactions}>
                 <StrategyInfo></StrategyInfo>
                 <VaultTransfer></VaultTransfer>
             </div>

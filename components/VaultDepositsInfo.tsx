@@ -5,13 +5,13 @@ import styles from '../styles/VaultDepositsInfo.module.css';
 const VaultDepositsInfo = () => {
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'space-around', height: '100%'}}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className={styles.vaultDepositInfo}>
+            <div className={styles.infoAssetIcon}>
                 <img src="svg/bitcoin.svg" alt="bitcoin" />
                 <span style={{ paddingLeft: '20px', fontSize: '96px' }}>BTC</span>
             </div>
 
-            <Col style={{flex: '0 0 40%', alignSelf: 'center'}}>
+            <Col className={styles.vaultDepositsStatus}>
                 <Row style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 8}}>
                     <span>CURRENT VAULT DEPOSITS</span>
                     <span>20 BTC</span>
