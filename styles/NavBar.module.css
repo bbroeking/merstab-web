@@ -27,6 +27,13 @@
     border-bottom: 1px solid #DC5355;
 }
 
+.civicIntegration {
+    width: 140px;
+    margin-right: 20px;
+    height: 48px;
+    border-radius: 4px;
+}
+
 .connectWallet {
     flex: 0 0 20%;
     display: flex;
@@ -39,6 +46,7 @@
     background: #DC5355 !important;
     border-radius: 2px;
     margin-right: 10px;
+    cursor: pointer;
 }
 
 @media (max-width: 1000px) {

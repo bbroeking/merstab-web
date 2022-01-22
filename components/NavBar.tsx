@@ -1,5 +1,6 @@
+import { ButtonMode, IdentityButton } from '@civic/solana-gateway-react';
 import { useWallet } from '@solana/wallet-adapter-react'
-import { WalletDisconnectButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react'
@@ -24,11 +25,13 @@ const NavBar = () => {
             </div>
 
             <div className={styles.connectWallet}>
+                { wallet.publicKey && <IdentityButton className={styles.civicIntegration} mode={ButtonMode.DARK} />
+}
                 <WalletMultiButton 
                     startIcon={<img src="svg/wallet.svg" alt="wallet icon" height={8} width={8} />}
                     className={styles.walletButton}>
                         {wallet.connected ?
-                         `... ${wallet.publicKey?.toString().slice(-4)}` : 
+                         `...${wallet.publicKey?.toString().slice(-4)}` : 
                          'Connect Wallet'}
                 </WalletMultiButton>
 

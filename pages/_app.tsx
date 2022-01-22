@@ -1,5 +1,5 @@
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import { ConnectionProvider, useWallet, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import {
     LedgerWalletAdapter,
@@ -10,14 +10,44 @@ import {
     SolletWalletAdapter,
     TorusWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
-import { clusterApiUrl } from '@solana/web3.js';
+import { clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { AppProps } from 'next/app';
 import { FC, useMemo } from 'react';
 import AppLayout from '../components/AppLayout';
+import { GatewayProvider, GatewayStatus, useGateway } from "@civic/solana-gateway-react";
+import { SolanaWalletAdapter } from '@civic/solana-gateway-react/dist/esm/solana';
 
 // Use require instead of import since order matters
 require('@solana/wallet-adapter-react-ui/styles.css');
 require('../styles/globals.css');
+
+const env = {
+    prod: {
+        gatekeeperNetwork: new PublicKey('ni1jXzPTq1yTqo67tUmVgnp22b1qGAAZCtPmHtskqYG'),
+        clusterUrl: '',
+        stage: '',
+    },
+    test: {
+        gatekeeperNetwork: new PublicKey('tniC2HX5yg2yDjMQEcUo1bHa44x9YdZVSqyKox21SDz'),
+        clusterUrl: 'https://api.devnet.solana.com',
+        stage: 'preprod',
+    }
+};
+
+
+function Gateway({ children = null as any }) {
+    const wallet = useWallet();
+    const { gatekeeperNetwork, stage, clusterUrl } = env.test;
+    return (
+        <GatewayProvider
+            wallet={wallet as SolanaWalletAdapter}
+            gatekeeperNetwork={gatekeeperNetwork}
+            stage={stage}
+            clusterUrl={clusterUrl}>
+                {children}
+        </GatewayProvider>
+    )
+}
 
 const App: FC<AppProps> = ({ Component, pageProps }) => {
     // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
@@ -46,11 +76,13 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
         <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
-                    <AppLayout>
-                        <Component>
-                        {pageProps}
-                        </Component>
-                    </AppLayout>
+                    <Gateway>
+                        <AppLayout>
+                            <Component>
+                                {pageProps}
+                            </Component>
+                        </AppLayout>
+                    </Gateway>
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>
