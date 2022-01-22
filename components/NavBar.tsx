@@ -24,8 +24,13 @@ const NavBar = () => {
             </div>
 
             <div className={styles.connectWallet}>
-                <WalletMultiButton startIcon={<img src="svg/wallet.svg" alt="wallet icon" height={8} width={8}/>}
-                className={styles.walletButton}>Connect Wallet</WalletMultiButton>
+                <WalletMultiButton 
+                    startIcon={<img src="svg/wallet.svg" alt="wallet icon" height={8} width={8} />}
+                    className={styles.walletButton}>
+                        {wallet.connected ?
+                         `... ${wallet.publicKey?.toString().slice(-4)}` : 
+                         'Connect Wallet'}
+                </WalletMultiButton>
 
             </div>
 
