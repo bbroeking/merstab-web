@@ -7,14 +7,14 @@ const { Header, Content, Footer } = Layout;
 
 const AppLayout = ({ children = undefined as any }) => {
     return (
-        <Layout style={{ overflow: 'scroll'}}>
-            <Header>
+        <Layout style={{ overflow: 'scroll', display: 'flex', minHeight: '100vh', flexDirection: 'column'}}>
+            <Header style={{ flexGrow: 0 }}>
                 <NavBar></NavBar>
             </Header>
-            <Content>
+            <Content style={{ flexGrow: 1 }}>
                 {children}
             </Content>
-            <Footer>
+            <Footer style={{ flexGrow: 0 }}>
                 <AppFooter></AppFooter>
             </Footer>
         </Layout>

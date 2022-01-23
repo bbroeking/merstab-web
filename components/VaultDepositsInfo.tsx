@@ -14,7 +14,7 @@ const VaultDepositsInfo = () => {
             <Col className={styles.vaultDepositsStatus}>
                 <Row style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 8}}>
                     <span>CURRENT VAULT DEPOSITS</span>
-                    <span>20 BTC</span>
+                    <span>80 BTC</span>
                 </Row>
                 <Row>
                     <Progress 

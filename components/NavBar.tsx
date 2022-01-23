@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react'
 import styles from '../styles/NavBar.module.css';
+import CivicVerification from './CivicVerification';
 
 const NavBar = () => {
     const wallet = useWallet();
@@ -25,7 +26,7 @@ const NavBar = () => {
             </div>
 
             <div className={styles.connectWallet}>
-                { wallet.publicKey && <IdentityButton className={styles.civicIntegration} mode={ButtonMode.DARK} />
+                { wallet.publicKey && <CivicVerification />
 }
                 <WalletMultiButton 
                     startIcon={<img src="svg/wallet.svg" alt="wallet icon" height={8} width={8} />}

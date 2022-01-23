@@ -47,6 +47,11 @@
     background-color: #1A1A1A;
 }
 
+.transactionButton:hover {
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
 .valueInputRow {
     display: flex;
     align-items: center;
@@ -64,6 +69,12 @@
     background: #343636;
     border: 0;
     border-radius: 2px;
+    opacity: 0.6;
+}
+
+.maxButton:hover {
+    cursor: pointer;
+    opacity: 1;
 }
 
 .amountField {
@@ -93,6 +104,18 @@
     height: 48px;
     border: 0;
     color: #FFFFFF;
+    opacity: 0.6;
+}
+
+.actionButton:hover {
+    cursor: pointer;
+    opacity: 1;
+}
+
+.actionButton:disabled {
+    background-color: #242424;
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
 }
 
 .active {

@@ -12,3 +12,17 @@
     align-items: center;
     justify-content: space-around;
 }
+
+.apyWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.apy {
+    font-size: 40px;
+    margin-right: 15px;
+}
+
+.topInfo {
+    margin-bottom: 20px;
+}

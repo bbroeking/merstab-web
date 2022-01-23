@@ -1,3 +1,4 @@
+import { useGateway, GatewayStatus } from '@civic/solana-gateway-react';
 import { Button, Col, Input, Row } from 'antd';
 import React, { useState } from 'react'
 import styles from '../styles/VaultTransfer.module.css';
@@ -5,6 +6,7 @@ import styles from '../styles/VaultTransfer.module.css';
 const VaultTransfer = () => {
     const [amount, setAmount] = useState(1);
     const [depositActive, setDepositActive] = useState<boolean>(true);
+    const { gatewayStatus } = useGateway();
     const onInputChange = (event: any) => {
         setAmount(event.target.value);
     }
@@ -38,7 +40,11 @@ const VaultTransfer = () => {
                     <Row>0.0 USDC</Row>
                 </Row>
                 <Row className={styles.displayRow}>
-                    <Button className={styles.actionButton}>DEPOSIT</Button>
+                    <Button
+                        className={styles.actionButton}
+                        disabled={GatewayStatus[gatewayStatus] !== "ACTIVE"}>
+                        {depositActive ? "DEPOSIT" : "WITHDRAW"}
+                    </Button>
                 </Row>
             </div>
         </div>
