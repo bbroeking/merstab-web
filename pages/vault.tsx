@@ -1,13 +1,13 @@
 import React from 'react'
+import LandingImage from '../components/LandingImage';
 import StrategyInfo from '../components/StrategyInfo';
 import VaultDepositsInfo from '../components/VaultDepositsInfo';
 import VaultPerformanceInfo from '../components/VaultPerformanceInfo';
 import VaultTransfer from '../components/VaultTransfer';
 import styles from '../styles/Vault.module.css';
-import Image from 'next/image';
 
 const Vault = () => {
-    return (
+    return (<div>
         <div className={styles.vaultSection}>
             <div className={styles.vaultDeposits}>
                 <VaultDepositsInfo></VaultDepositsInfo>
@@ -20,6 +20,8 @@ const Vault = () => {
                 <VaultTransfer></VaultTransfer>
             </div>
         </div>
+    </div>
+
     )
 }
 

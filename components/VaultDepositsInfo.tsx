@@ -33,7 +33,6 @@ const VaultDepositsInfo = () => {
                     <span>100 USDC</span>
                 </Row>
             </Col>
-
         </div>
     )
 }

@@ -1,4 +1,3 @@
-import { ButtonMode, IdentityButton } from '@civic/solana-gateway-react';
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import Link from 'next/link';
@@ -12,22 +11,17 @@ const NavBar = () => {
     const router = useRouter();
     return (
         <div className={styles.navRow}>
-            <div className={styles.icon}>
-
-            </div>
-
+            <div className={styles.icon}></div>
             <div className={styles.navTabs}>
                 <Link href={'/'} >
                     <a className={`${styles.navItem} ${router.pathname == "/" ? styles.active : ""}`} >Home</a>
                 </Link>
-                <Link href={'vault'}>
-                    <a className={`${styles.navItem} ${router.pathname == "/vault" ? styles.active : ""}`} >Vault</a>
+                <Link href={'overview'}>
+                    <a className={`${styles.navItem} ${router.pathname == "/overview" ? styles.active : ""}`} >Vault</a>
                 </Link>
             </div>
-
             <div className={styles.connectWallet}>
-                { wallet.publicKey && <CivicVerification />
-}
+                { wallet.publicKey && <CivicVerification />}
                 <WalletMultiButton 
                     startIcon={<img src="svg/wallet.svg" alt="wallet icon" height={8} width={8} />}
                     className={styles.walletButton}>

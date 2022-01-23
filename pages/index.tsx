@@ -3,18 +3,18 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import styles from "../styles/index.module.css";
+import Link from 'next/link';
+import LandingImage from '../components/LandingImage';
 
 const Home: NextPage = () => {
     return (
         <div>
-            <Head>
-                <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap" rel="stylesheet"></link>
-            </Head>
+            <LandingImage></LandingImage>
             <Col className={styles.homeColumn}>
-                <Row className={styles.flexRow}>
+                <Row className={styles.flexRow} style={{ paddingBottom: 400 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', margin: '0 60px' }}>
                         <div style={{ fontSize: 70, textOverflow: 'wrap' }}>Derivatives Market Making Strategy Vaults</div>
-                        <Button className={styles.yieldButton}>EARN YIELD</Button>
+                        <Link href='/overview'><Button className={styles.yieldButton}>EARN YIELD</Button></Link>
                     </div>
                     <Image src={'/logo.png'} width={400} height={400}></Image>
                 </Row>
