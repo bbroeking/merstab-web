@@ -1,13 +1,12 @@
-import { useWallet } from '@solana/wallet-adapter-react'
 import React from 'react'
 import StrategyInfo from '../components/StrategyInfo';
 import VaultDepositsInfo from '../components/VaultDepositsInfo';
 import VaultPerformanceInfo from '../components/VaultPerformanceInfo';
 import VaultTransfer from '../components/VaultTransfer';
 import styles from '../styles/Vault.module.css';
+import Image from 'next/image';
 
 const Vault = () => {
-    const solana = useWallet();
     return (
         <div className={styles.vaultSection}>
             <div className={styles.vaultDeposits}>

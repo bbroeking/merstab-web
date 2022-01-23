@@ -26,6 +26,7 @@
     justify-content: space-between;
     padding: 20px 18px;
     color: #bfb6b6;
+    font-size: 16px;
 }
 
 .walletBalanceRow {
@@ -36,8 +37,14 @@
     color: #bfb6b6;
 }
 
+.fundsProcessingRow {
+    padding: 18px;
+    color: #bfb6b6;
+    font-size: 12px;
+}
+
 .walletBalance {
-    font-size: 11px;
+    font-size: 14px;
 }
 
 .transactionButton {
@@ -96,6 +103,13 @@
     display: flex;
 }
 
+.bottomRow {
+    margin-left: 10px;
+    margin-right: 10px;
+    display: flex;
+    border-top: 1px solid #474747;
+}
+
 .actionButton {
     flex: 1 1 400px;
     background: #DC5355;
@@ -120,4 +134,8 @@
 
 .active {
     border-bottom: 1px solid #DC5355;
+}
+
+.spacer {
+    width: 8px;
 }
