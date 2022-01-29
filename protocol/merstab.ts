@@ -66,6 +66,7 @@ export function toPublicKeys(
     const newObj: any = {};
 
     for (const key in obj) {
+        if (key == "name") continue;
         const value = obj[key];
 
         if (typeof value == "string") {
@@ -80,7 +81,9 @@ export function toPublicKeys(
     return newObj;
 }
 
-export async function getAndInitTokenAccounts(
+
+
+export async function getOrInitTokenAccounts(
     merstabClient: MerstabClient,
     vaultMetadata: VaultMetadata,
     walletPubKey: PublicKey,
@@ -165,13 +168,31 @@ export class MerstabClient {
         return new MerstabClient(program, devnet, vaultMetdata);
     }
 
+    async getTokenAccount (walletPubKey: PublicKey) {
+        return await Token.getAssociatedTokenAddress(
+            ASSOCIATED_TOKEN_PROGRAM_ID,
+            TOKEN_PROGRAM_ID,
+            this.vaultMetadata.tokenMint,
+            walletPubKey
+        );
+    }
+
+    async getStakedTokenAccount(walletPubKey: PublicKey) {
+        return await Token.getAssociatedTokenAddress(
+            ASSOCIATED_TOKEN_PROGRAM_ID,
+            TOKEN_PROGRAM_ID,
+            this.vaultMetadata.stakedTokenMint,
+            walletPubKey
+        );
+    }
+
     async stake(
         amount: anchor.BN,
         wallet: PublicKey,
         gatewayToken: PublicKey,
         gatekeeperNetwork: PublicKey,
     ) {
-        const { ata, stakedATA } = await getAndInitTokenAccounts(this, this.vaultMetadata, wallet);
+        const { ata, stakedATA } = await getOrInitTokenAccounts(this, this.vaultMetadata, wallet);
         const ix = await this.program.instruction.stake(amount, {
             accounts: {
                 vault: this.vaultMetadata.vault,
@@ -200,22 +221,42 @@ export class MerstabClient {
     }
 
     async unstake(amount: anchor.BN, wallet: PublicKey) {
-        const tokenAccount = new PublicKey('E4rbzKVZo9pM2A8rNoAYrvwYYq6c8z35WWN5bsCkER85');//await findAssociatedTokenAddress(wallet, this.vaultMetadata.tokenMint)
-        const stakedTokenAccount = new PublicKey('Ao42CKHYZG7P7811NW28vrCeAixuzEoTSWyYMzKmWZdR'); //await findAssociatedTokenAddress(wallet, this.vaultMetadata.stakedTokenMint);
+        // const coder = new anchor.Coder(idl);
+        // const data = await this.program.provider.connection.getAccountInfo(this.vaultMetadata.vault);
+        // if (!data) return;
+        // const ha = await this.program.coder.accounts.decode("Vault", data.data);
+        // console.log("ha, ", ha);
+        // let market = coder.accounts.decode("Market", account);
 
-        const unstakeTx = await this.program.rpc.unstake(amount, {
+        const [token_vault_auth_pda, token_vault_auth_bump] = await PublicKey.findProgramAddress(
+            [
+                Buffer.from(anchor.utils.bytes.utf8.encode("token_vault_authority")), 
+                Buffer.from(anchor.utils.bytes.utf8.encode('RdtHKxfH4r'))
+            ],
+            this.program.programId
+        );
+        console.log(token_vault_auth_pda);
+
+        const { ata, stakedATA } = await getOrInitTokenAccounts(this, this.vaultMetadata, wallet);
+        const unstakeIx = await this.program.instruction.unstake(amount, {
             accounts: {
                 vault: this.vaultMetadata.vault,
                 tokenVault: this.vaultMetadata.tokenVaultPDA,
-                tokenVaultAuthority: this.vaultMetadata.tokenVaultAuthPDA,
-                stakersTokenAccount: tokenAccount,
-                stakersAta: stakedTokenAccount,
+                tokenVaultAuthority: token_vault_auth_pda,
+                stakersTokenAccount: ata,
+                stakersAta: stakedATA,
                 stakedTokenMintAuthority: this.vaultMetadata.stakedTokenMintAuthority,
                 staker: wallet,
                 stakedTokenMint: this.vaultMetadata.stakedTokenMint,
                 tokenProgram: TOKEN_PROGRAM_ID,
             },
         })
-        console.log(`TxId: ${unstakeTx}`);
-    }
+        const tx = new Transaction().add(unstakeIx);
+        try {
+            const txId = await this.program.provider.send(tx)
+            console.log(`txhash- create account: ${txId}`);
+
+        } catch(err) {
+            console.log(err)
+        }    }
 }
