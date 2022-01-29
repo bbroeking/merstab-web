@@ -1,18 +1,32 @@
 import { useGateway, GatewayStatus } from '@civic/solana-gateway-react';
-import { Button, Col, Input, Row } from 'antd';
+import { Button, Col, Row } from 'antd';
 import React, { useState } from 'react'
 import styles from '../styles/VaultTransfer.module.css';
 import Image from 'next/image';
+import { MerstabClient, Wallet } from '../protocol/merstab';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import * as anchor from '@project-serum/anchor';
+import { civicEnv } from '../pages/_app';
+import { PublicKey } from '@solana/web3.js';
 
 const VaultTransfer = () => {
     const [amount, setAmount] = useState(0);
     const [depositActive, setDepositActive] = useState<boolean>(true);
-    const { gatewayStatus } = useGateway();
+    const { gatewayStatus, gatewayToken } = useGateway();
+    const connection = useConnection();
+    const wallet = useWallet();
     const onInputChange = (event: any) => {
         setAmount(event.target.value);
     }
     const onTabToggle = (toggle: boolean) => {
         setDepositActive(toggle);
+    }
+
+    const onClickButton = async () => {
+        if (!wallet || !wallet.publicKey || !gatewayToken?.publicKey) return;
+        const provider = new anchor.Provider(connection.connection, wallet as Wallet, anchor.Provider.defaultOptions());
+        const merstabClient = await MerstabClient.connect(provider, true);
+        merstabClient.stake(new anchor.BN(1), wallet.publicKey, gatewayToken?.publicKey, civicEnv.test.gatekeeperNetwork);
     }
     return (
         <div className={styles.transferSection}>
@@ -43,6 +57,7 @@ const VaultTransfer = () => {
                 </Row>
                 <Row className={styles.displayRow}>
                     <Button
+                        onClick={onClickButton}
                         className={styles.actionButton}
                         disabled={GatewayStatus[gatewayStatus] !== "ACTIVE"}>
                         {depositActive ? "DEPOSIT" : "WITHDRAW"}

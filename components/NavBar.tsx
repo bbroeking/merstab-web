@@ -16,7 +16,7 @@ const NavBar = () => {
                 <Link href={'/'} >
                     <a className={`${styles.navItem} ${router.pathname == "/" ? styles.active : ""}`} >Home</a>
                 </Link>
-                <Link href={'overview'}>
+                <Link href={'/overview'}>
                     <a className={`${styles.navItem} ${router.pathname == "/overview" ? styles.active : ""}`} >Vault</a>
                 </Link>
             </div>

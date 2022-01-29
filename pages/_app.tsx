@@ -21,7 +21,7 @@ import { SolanaWalletAdapter } from '@civic/solana-gateway-react/dist/esm/solana
 require('@solana/wallet-adapter-react-ui/styles.css');
 require('../styles/globals.css');
 
-const env = {
+export const civicEnv = {
     prod: {
         gatekeeperNetwork: new PublicKey('ni1jXzPTq1yTqo67tUmVgnp22b1qGAAZCtPmHtskqYG'),
         clusterUrl: '',
@@ -37,7 +37,7 @@ const env = {
 
 function Gateway({ children = null as any }) {
     const wallet = useWallet();
-    const { gatekeeperNetwork, stage, clusterUrl } = env.test;
+    const { gatekeeperNetwork, stage, clusterUrl } = civicEnv.test;
     return (
         <GatewayProvider
             wallet={wallet as SolanaWalletAdapter}
