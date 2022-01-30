@@ -32,3 +32,15 @@
     align-self: center;
     flex: 1 1 auto;
 }
+
+.depositInfo {
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+    /* identical to box height, or 120% */
+    letter-spacing: 0.15px;
+    /* Text/Secondary */
+    color: rgba(255, 255, 255, 0.74);
+}

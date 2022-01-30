@@ -27,7 +27,7 @@ const VaultTransfer = () => {
             setMerstabClient(client);
         }
         setupClient();
-    }, [])
+    }, []);
 
     const fetchBalances = async () => {
         if(!merstabClient || !wallet.publicKey) return;
@@ -97,7 +97,7 @@ const VaultTransfer = () => {
                     </Button>
                 </Row>
                 <Row className={styles.bottomRow}>
-                    <span className={styles.fundsProcessingRow}>Funds are processed at 12:00AM UTC</span>
+                    <span className={styles.fundsProcessingRow}>Funds are deposited onto Mango Markets at 12:00AM UTC.</span>
                 </Row>
             </div>
         </div>

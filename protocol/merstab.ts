@@ -1,7 +1,6 @@
 import * as anchor from '@project-serum/anchor';
 import { PublicKey, Transaction } from '@solana/web3.js';
-import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
-
+import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID, AccountLayout as TokenAccountLayout } from '@solana/spl-token';
 const idl = require('./idls/devnet.json');
 
 export interface VaultMetadata {
@@ -166,6 +165,13 @@ export class MerstabClient {
         const vaultMetdata = toPublicKeys(idl.metadata) as VaultMetadata;
 
         return new MerstabClient(program, devnet, vaultMetdata);
+    }
+
+    async getVaultValue(): Promise<number> {
+        const tokenAccountData = await this.program.provider.connection.getAccountInfo(this.vaultMetadata.tokenVaultPDA);
+        const parsedStakedTokenAccountData = TokenAccountLayout.decode(tokenAccountData?.data);
+
+        return new anchor.BN(parsedStakedTokenAccountData.amount, undefined, "le").toNumber();
     }
 
     async getTokenAccount (walletPubKey: PublicKey) {

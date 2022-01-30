@@ -5,19 +5,22 @@ import { useRouter } from 'next/router';
 import React from 'react'
 import styles from '../styles/NavBar.module.css';
 import CivicVerification from './CivicVerification';
+import Image from 'next/image';
 
 const NavBar = () => {
     const wallet = useWallet();
     const router = useRouter();
     return (
         <div className={styles.navRow}>
-            <div className={styles.icon}></div>
+            <div className={styles.icon}>
+                <Image src="/svg/logo.svg" alt='merstab logo' width={120} height={120}></Image>
+            </div>
             <div className={styles.navTabs}>
                 <Link href={'/'} >
-                    <a className={`${styles.navItem} ${router.pathname == "/" ? styles.active : ""}`} >Home</a>
+                    <a className={`${styles.navItem} ${router.pathname == "/" ? styles.active : ""}`} >HOME</a>
                 </Link>
                 <Link href={'/overview'}>
-                    <a className={`${styles.navItem} ${router.pathname == "/overview" ? styles.active : ""}`} >Vault</a>
+                    <a className={`${styles.navItem} ${router.pathname !== "/" ? styles.active : ""}`} >VAULTS</a>
                 </Link>
             </div>
             <div className={styles.connectWallet}>

@@ -4,12 +4,14 @@
     display: flex;
     flex-direction: row;
     height: 76px;
-    box-shadow: 0px 2px 5px 2px #DC5355;
+    box-shadow: 0px 1px 5px 1px #DC5355;
     position: relative;
 }
 
 .icon {
     flex: 0 0 20%;
+    margin-top: -20px;
+    padding-left: 20px;
 }
 
 .navTabs {
@@ -22,6 +24,8 @@
 
 .navItem {
     padding: 10px 15px;
+    margin: 0 20px;
+    font-size: 16px;
 }
 
 .active {
