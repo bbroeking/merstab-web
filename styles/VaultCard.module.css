@@ -28,9 +28,15 @@
 .apyWrapper {
     display: flex;
     align-items: center;
-    padding: 40px 10px;
+    padding: 10px 10px;
     margin: 0 5px;
     justify-content: center;
+}
+
+.vaultDescription {
+    padding: 10px;
+    margin: 0 5px;
+    font-size: 14px;
 }
 
 .apy {

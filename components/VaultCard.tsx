@@ -1,20 +1,58 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/VaultCard.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Col, Progress, Row } from 'antd';
+import { MerstabClient, Wallet } from '../protocol/merstab';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import * as anchor from '@project-serum/anchor';
+import { VAULT_CAPACITY } from './VaultDepositsInfo';
+import { AccountLayout as TokenAccountLayout } from '@solana/spl-token';
 
 const VaultCard = () => {
+    const connection = useConnection();
+    const wallet = useWallet();
+    const [merstabClient, setMerstabClient] = useState<MerstabClient>();
+    const [vaultValue, setVaultValue] = useState<number>(0);
+    const [position, setPosition] = useState(0);
+
+    useEffect(() => {
+        const setupClient = async () => {
+            const provider = new anchor.Provider(connection.connection, wallet as Wallet, anchor.Provider.defaultOptions());
+            const client = await MerstabClient.connect(provider, true);
+            const vaultValue = await client.getVaultValue();
+            setMerstabClient(client);
+            setVaultValue(vaultValue);
+        }
+        setupClient();
+    }, []);
+
+    const fetchBalances = async () => {
+        if(!merstabClient || !wallet.publicKey) return;
+        const stakedTokenAccount = await merstabClient.getStakedTokenAccount(wallet.publicKey!);
+        const stakedTokenAccountData = await connection.connection.getAccountInfo(stakedTokenAccount);
+        const parsedStakedTokenAccountData = TokenAccountLayout.decode(stakedTokenAccountData?.data);
+        setPosition(new anchor.BN(parsedStakedTokenAccountData.amount, undefined, "le").toNumber());
+    }
+
+    useEffect(() => {
+        fetchBalances();
+    }, [merstabClient]);
+    
     return (
         <Link href='/vault'>
             <div className={styles.vaultCard}>
                 <Row className={styles.assetInfo}>
                     <div className={styles.spacer}></div>
-                    <Image src="/svg/bitcoinUsdcPair.svg" alt='bitcoin and usdc pair' width={60} height={60}></Image>
+                    <Image src="/svg/btcperp.svg" alt='bitcoin and usdc pair' width={60} height={60}></Image>
                     <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 10 }}>
-                        <span style={{ fontSize: '24px' }}>BTC</span>
-                        <span>Perpetual Future Vault</span>
+                        <span style={{ fontSize: '24px', color: '#FFF' }}>BTC-PERP</span>
+                        <span>Perpetual Futures Vault</span>
                     </div>
+                </Row>
+
+                <Row>
+                    <div className={styles.vaultDescription}>Generates yield through deploying a market making strategy on Mango Markets</div>
                 </Row>
 
                 <Row>
@@ -27,25 +65,25 @@ const VaultCard = () => {
                 <Col className={styles.vaultDepositsStatus}>
                     <Row style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 8 }}>
                         <span>Deposits</span>
-                        <span>80 USDC</span>
+                        <span>{vaultValue} USDC</span>
                     </Row>
                     <Row>
                         <Progress
-                            strokeColor='#2775CA'
+                            strokeColor='#D74B5E'
                             strokeLinecap='square'
                             trailColor='#474747'
-                            percent={80}
+                            percent={(vaultValue / VAULT_CAPACITY ) * 100}
                             showInfo={false} />
                     </Row>
                     <Row style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8 }}>
                         <span>Capacity</span>
-                        <span>100 USDC</span>
+                        <span>{VAULT_CAPACITY} USDC</span>
                     </Row>
                 </Col>
 
                 <Row className={styles.positionRow}>
                     <Col>Your position:</Col>
-                    <Col>0.0 USDC</Col>
+                    <Col>{position} USDC</Col>
                 </Row>
             </div>
         </Link>)
