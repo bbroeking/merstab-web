@@ -1,3 +1,11 @@
+.root {
+    overflow: scroll;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    overscroll-behavior: contain;
+}
+
 .content {
     background-color: #131313;
 }

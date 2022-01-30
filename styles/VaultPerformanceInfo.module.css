@@ -32,6 +32,11 @@
     justify-content: center;
 }
 
+.metricRow {
+    display: flex;
+    flex-grow: 1;
+}
+
 @media (max-width: 1000px) {
     .vaultPerformanceInfo {
         flex-direction: column;
@@ -40,6 +45,9 @@
 
 @media (max-width: 770px) {
     .metrics {
+        flex-direction: column;
+    }
+    .metricRow {
         flex-direction: column;
     }
 }

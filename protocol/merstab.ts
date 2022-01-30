@@ -195,8 +195,8 @@ export class MerstabClient {
     async stake(
         amount: anchor.BN,
         wallet: PublicKey,
-        gatewayToken: PublicKey,
-        gatekeeperNetwork: PublicKey,
+        // gatewayToken: PublicKey,
+        // gatekeeperNetwork: PublicKey,
     ) {
         const { ata, stakedATA } = await getOrInitTokenAccounts(this, this.vaultMetadata, wallet);
         const ix = await this.program.instruction.stake(amount, {
@@ -210,9 +210,9 @@ export class MerstabClient {
                 stakedTokenMint: this.vaultMetadata.stakedTokenMint,
                 tokenProgram: TOKEN_PROGRAM_ID,
 
-                userWallet: wallet,
-                gatewayToken,
-                gatekeeperNetwork
+                // userWallet: wallet,
+                // gatewayToken,
+                // gatekeeperNetwork
             },
         });
 

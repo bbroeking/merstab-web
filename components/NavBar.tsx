@@ -24,7 +24,7 @@ const NavBar = () => {
                 </Link>
             </div>
             <div className={styles.connectWallet}>
-                { wallet.publicKey && <CivicVerification />}
+                {/* { wallet.publicKey && <CivicVerification />} */}
                 <WalletMultiButton 
                     startIcon={<img src="svg/wallet.svg" alt="wallet icon" height={8} width={8} />}
                     className={styles.walletButton}>

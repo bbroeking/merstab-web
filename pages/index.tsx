@@ -1,6 +1,5 @@
 import { Button, Col, Progress, Row } from 'antd';
 import type { NextPage } from 'next';
-import Head from 'next/head';
 import Image from 'next/image';
 import styles from "../styles/index.module.css";
 import Link from 'next/link';

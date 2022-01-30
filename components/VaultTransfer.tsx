@@ -16,7 +16,7 @@ const VaultTransfer = () => {
     const [position, setPosition] = useState(0);
     const [walletBalance, setWalletBalance] = useState(0);
     const [merstabClient, setMerstabClient] = useState<MerstabClient>();
-    const { gatewayStatus, gatewayToken } = useGateway();
+    // const { gatewayStatus, gatewayToken } = useGateway();
     const connection = useConnection();
     const wallet = useWallet();
 
@@ -30,7 +30,7 @@ const VaultTransfer = () => {
     }, []);
 
     const fetchBalances = async () => {
-        if(!merstabClient || !wallet.publicKey) return;
+        if (!merstabClient || !wallet.publicKey) return;
         const tokenAccount = await merstabClient.getTokenAccount(wallet.publicKey!);
         const stakedTokenAccount = await merstabClient.getStakedTokenAccount(wallet.publicKey!);
         const tokenAccountData = await connection.connection.getAccountInfo(tokenAccount);
@@ -47,16 +47,18 @@ const VaultTransfer = () => {
     }, [merstabClient, wallet])
 
     const onInputChange = (event: any) => {
-        setAmount(event.target.value);
+        const amount = parseFloat(event.target.value);
+        if (amount)
+            setAmount(amount);
     }
     const onTabToggle = (toggle: boolean) => {
         setDepositActive(toggle);
     }
 
     const onInteract = async () => {
-        if (!wallet || !wallet.publicKey || !gatewayToken?.publicKey || !merstabClient) return;
+        if (!wallet || !wallet.publicKey || !merstabClient) return; // !gatewayToken?.publicKey 
         if (depositActive)
-            await merstabClient.stake(new anchor.BN(amount), wallet.publicKey, gatewayToken?.publicKey, civicEnv.test.gatekeeperNetwork);
+            await merstabClient.stake(new anchor.BN(amount), wallet.publicKey); //gatewayToken?.publicKey, civicEnv.test.gatekeeperNetwork
         else
             await merstabClient.unstake(new anchor.BN(amount), wallet.publicKey);
         fetchBalances();
@@ -79,7 +81,7 @@ const VaultTransfer = () => {
                 <Row>
                     <div className={styles.valueInputRow}>
                         <Button className={styles.maxButton}>MAX</Button>
-                        <input className={styles.amountField} value={amount} onChange={onInputChange}></input>
+                        <input type='number' className={styles.amountField} value={amount} onChange={onInputChange}></input>
                         <Image className={styles.currencyIcon} src='/svg/usdc.svg' width={30} height={30}></Image>
                         <div className={styles.spacer}></div>
                     </div>
@@ -92,7 +94,7 @@ const VaultTransfer = () => {
                     <Button
                         onClick={onInteract}
                         className={styles.actionButton}
-                        disabled={GatewayStatus[gatewayStatus] !== "ACTIVE"}>
+                        disabled={!wallet.connected}>
                         {depositActive ? "DEPOSIT" : "WITHDRAW"}
                     </Button>
                 </Row>
