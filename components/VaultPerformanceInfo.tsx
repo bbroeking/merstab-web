@@ -18,20 +18,24 @@ const VaultPerformanceInfo = () => {
         { metric: '51.49%', metricTitle: 'Win (%)' },
         { metric: '336', metricTitle: 'Total Trades' },
         { metric: '3.58', metricTitle: 'Sharpe Ratio' },
+    ];
+
+    const data2: VaultMetric[] = [
         { metric: '2.39', metricTitle: 'Profit Factor' },
         { metric: '4.12%', metricTitle: 'Avg Win' },
         { metric: '-1.53%', metricTitle: 'Avg Loss' },
         { metric: '126.65%', metricTitle: 'Long Returns' },
         { metric: '0%', metricTitle: 'Short Returns' },
-        { metric: '1d 14h', metricTitle: 'Avg Exposure' },
-    ]
+        { metric: '1d 14h', metricTitle: 'Avg Exposure' }
+    ];
+
     // fetch
     const apy = "22.1%";
     return (
         <Row gutter={[16, 16]} className={styles.vaultPerformanceInfo}>
             <Col className={styles.performance} span={12}>
                 <div className={styles.vaultPerformance}>VAULT PERFORMACE</div>
-                <div style={{ display: 'flex', alignItems: 'center'}}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                     <div style={{ marginRight: 4, fontSize: 60 }}>{apy}</div>
                     <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: 8 }}>
                         <div style={{ fontSize: 16 }}>Projected</div>
@@ -40,9 +44,15 @@ const VaultPerformanceInfo = () => {
                 </div>
             </Col>
             <Col className={styles.metrics} span={12}>
-                {data.map((vaultMetric: VaultMetric) => {
-                    return <MetricTile {...vaultMetric}> </MetricTile>;
-                })}
+                <div style={{ display: 'flex', flexGrow: 1}}>
+                    {data.map((vaultMetric: VaultMetric) => {
+                    return <MetricTile {...vaultMetric}> </MetricTile>;})}
+                </div>
+                <div style={{ display: 'flex', flexGrow: 1}}>
+                    {data2.map((vaultMetric: VaultMetric) => {
+                    return <MetricTile {...vaultMetric}> </MetricTile>;})}
+                </div>
+
             </Col>
         </Row>
     )

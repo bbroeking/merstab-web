@@ -13,7 +13,7 @@ const Home: NextPage = () => {
             <Col className={styles.homeColumn}>
                 <Row className={styles.flexRow} style={{ paddingBottom: 700 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', margin: '0 60px', justifyContent: 'center', alignItems: 'center' }}>
-                        <div style={{ fontSize: 70, textOverflow: 'wrap', width: '60%', paddingBottom: 20 }}>Earn Yield On Your Crypto Assets With Fully-automated DeFi Trading Strategies</div>
+                        <div className={styles.earnYieldHeader}>Earn Yield On Your Crypto Assets With Fully-automated DeFi Trading Strategies</div>
                         <Link href='/overview'><Button className={styles.yieldButton}>START EARNING</Button></Link>
                     </div>
                 </Row>
@@ -29,10 +29,10 @@ const Home: NextPage = () => {
                 <Row className={styles.flexRow}>
                     <div className={styles.flexColumn}>
                         <h3 style={{ paddingBottom: 60 }}>OUR PRODUCTS</h3>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div className={styles.ourProductsSection}>
                             <div className={`${styles.text} ${styles.flexColumn}`}>
                                 <h1 className={styles.perpHeader}>BTC-PERP</h1>
-                                <div>Generates yield through deploying a market making strategy on Mango Markets</div>
+                                <div className={styles.btcPerpDescription}>Generates yield through deploying a market making strategy on Mango Markets</div>
                             </div>
                             <div className={styles.marketMakingVault}>
                                 <div className={styles.vaultHeader} style={{ alignSelf: 'center', paddingBottom: 20 }}>Market Making Vault</div>
@@ -58,7 +58,7 @@ const Home: NextPage = () => {
                         </div>
                     </div>
                 </Row>
-                <Row style={{ display: 'flex', padding: '280px 50px 280px 50px', background: '#1E1F1F', justifyContent: 'space-around' }}>
+                <Row className={styles.teamSection}>
                     <div>
                         <h1 className={styles.teamHeader}>THE TEAM</h1>
                         <div className={styles.teamText}>Here at Merstab, we work hard to build a decentralized infrastructure that helps stabilize the DeFi derivatives market at an early stage by providing liquidity more efficiently.</div>
