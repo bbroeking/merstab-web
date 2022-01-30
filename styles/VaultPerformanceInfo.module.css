@@ -26,3 +26,20 @@
     box-sizing: border-box;
     border-radius: 4px;
 }
+
+.vaultPerformanceInfo {
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 1000px) {
+    .vaultPerformanceInfo {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 770px) {
+    .metrics {
+        flex-direction: column;
+    }
+}

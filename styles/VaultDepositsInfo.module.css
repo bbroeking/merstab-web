@@ -17,6 +17,7 @@
     .vaultDepositsStatus {
         flex: unset;
         align-self: unset;
+        width: 80%;
     }
 }
 

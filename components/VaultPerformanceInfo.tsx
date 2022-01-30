@@ -28,7 +28,7 @@ const VaultPerformanceInfo = () => {
     // fetch
     const apy = "22.1%";
     return (
-        <Row gutter={[16, 16]} style={{ display: 'flex', justifyContent: 'center'}}>
+        <Row gutter={[16, 16]} className={styles.vaultPerformanceInfo}>
             <Col className={styles.performance} span={12}>
                 <div className={styles.vaultPerformance}>VAULT PERFORMACE</div>
                 <div style={{ display: 'flex', alignItems: 'center'}}>
