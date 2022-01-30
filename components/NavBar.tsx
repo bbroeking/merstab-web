@@ -1,5 +1,5 @@
 import { useWallet } from '@solana/wallet-adapter-react'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { WalletModalButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react'
@@ -32,9 +32,7 @@ const NavBar = () => {
                          `...${wallet.publicKey?.toString().slice(-4)}` : 
                          'Connect Wallet'}
                 </WalletMultiButton>
-
             </div>
-
         </div>
     )
 }
