@@ -13,12 +13,114 @@
     padding: 10px;
     width: 156px;
     height: 48px;
-    color: #FFF;
     cursor: pointer;
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+    color: #FFFFFF;
 }
 
 .yieldButton:hover {
     opacity: 1;
+}
+
+.learnMore {
+    border: 0;
+    background: transparent;
+    color: #DC5355;
+    font-size: 16px;
+    padding-top: 10px;
+}
+
+.sectionHeader {
+    font-size: 24px;
+    padding-bottom: 10px;
+    color: #FFF;
+}
+
+.vaultHeader {
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 24px;
+    text-align: center;
+    letter-spacing: 0.18px;
+    color: #FFFFFF;
+}
+
+.teamText {
+    padding-bottom: 20px;
+    width: 500px;
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.74);
+}
+
+.teamHeader {
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 48px;
+    line-height: 56px;
+    color: #FFFFFF;
+    margin: 5px;
+}
+
+.perpHeader {
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 60px;
+    line-height: 72px;
+    letter-spacing: -0.5px;
+    color: #FFFFFF;
+    align-self: flex-start;
+    margin: 0;
+}
+
+.marketMakingVault {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 40px;
+    background: linear-gradient(149.95deg, rgba(153, 40, 41, 0.201) 0%, rgba(220, 83, 85, 0.03) 98.33%);
+    border: 1px solid #474747;
+    box-sizing: border-box;
+    border-radius: 8px;
+    height: 510px;
+    width: 343px;
+}
+
+.apy {
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 24px;
+    letter-spacing: 0.18px;
+    color: #FFFFFF;
+    align-self: center;
+}
+
+.vaultText {
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
+    /* or 143% */
+    letter-spacing: 0.25px;
+    /* Text/Secondary */
+    color: rgba(255, 255, 255, 0.74);
 }
 
 .flexRow {
