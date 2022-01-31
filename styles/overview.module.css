@@ -25,6 +25,12 @@
     justify-content: space-around;
 }
 
+.overviewHeader {
+    color: #DC5355;
+    padding-top: 60px;
+    font-size: 40px
+}
+
 @media (max-width: 1000px) {
     .main {
         display: flex;

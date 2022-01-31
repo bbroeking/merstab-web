@@ -13,7 +13,6 @@ const Home: NextPage = () => {
     })
     return (
         <div>
-            {isDesktop ? <LandingVideo></LandingVideo> : <LandingImage></LandingImage>}
             <Col className={styles.homeColumn}>
                 <Row className={styles.flexRow} style={{ paddingBottom: 700 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', margin: '0 60px', justifyContent: 'center', alignItems: 'center' }}>
@@ -21,7 +20,8 @@ const Home: NextPage = () => {
                         <Link href='/overview'><Button className={styles.yieldButton}>START EARNING</Button></Link>
                     </div>
                 </Row>
-                <h2 className={styles.line}><span className={styles.lineSpan}>OUR MISSION</span></h2>
+                {isDesktop ? <LandingVideo></LandingVideo> : <LandingImage></LandingImage>}
+                <h2 className={styles.ourMissionLine}><span className={styles.lineSpan}>THE MISSION</span></h2>
                 <Row className={styles.flexRow}>
                     <div className={styles.flexColumn}>
                         <div className={styles.sectionHeader}>Stabilizing the DeFi Derivatives Market Through Optimizing Market Inefficiencies</div>

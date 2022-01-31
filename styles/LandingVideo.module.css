@@ -1,6 +1,6 @@
 .vimeoWrapper {
     position: fixed;
-    top: 0;
+    top: 300px;
     left: 0;
     width: 100%;
     height: 100%;
@@ -11,7 +11,7 @@
 
 .vimeoWrapper iframe {
     width: 100vw;
-    height: 56.25vw;
+    height: 69.25vw;
     /* Given a 16:9 aspect ratio, 9/16*100 = 56.25 */
     min-height: 100vh;
     min-width: 177.77vh;

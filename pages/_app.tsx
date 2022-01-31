@@ -34,20 +34,20 @@ export const civicEnv = {
     }
 };
 
-
-function Gateway({ children = null as any }) {
-    const wallet = useWallet();
-    const { gatekeeperNetwork, stage, clusterUrl } = civicEnv.test;
-    return (
-        <GatewayProvider
-            wallet={wallet as SolanaWalletAdapter}
-            gatekeeperNetwork={gatekeeperNetwork}
-            stage={stage}
-            clusterUrl={clusterUrl}>
-                {children}
-        </GatewayProvider>
-    )
-}
+// Civic location check if needed
+// function Gateway({ children = null as any }) {
+//     const wallet = useWallet();
+//     const { gatekeeperNetwork, stage, clusterUrl } = civicEnv.test;
+//     return (
+//         <GatewayProvider
+//             wallet={wallet as SolanaWalletAdapter}
+//             gatekeeperNetwork={gatekeeperNetwork}
+//             stage={stage}
+//             clusterUrl={clusterUrl}>
+//                 {children}
+//         </GatewayProvider>
+//     )
+// }
 
 const App: FC<AppProps> = ({ Component, pageProps }) => {
     // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
@@ -76,13 +76,13 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
         <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
-                    <Gateway>
+                    {/* <Gateway> */}
                         <AppLayout>
                             <Component>
                                 {pageProps}
                             </Component>
                         </AppLayout>
-                    </Gateway>
+                    {/* </Gateway> */}
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>

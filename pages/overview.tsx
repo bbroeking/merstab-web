@@ -13,7 +13,7 @@ const Overview = () => {
     return <div>
         {isDesktop ? <LandingVideo></LandingVideo> : <LandingImage></LandingImage>}
         <Col className={styles.main}>
-            <h1  className={styles.overviewHeader} style={{ color: "#DC5355", paddingTop: 60, fontSize: 40 }}>Get yield through a vault</h1>
+            <h1  className={styles.overviewHeader}>Vault Strategies</h1>
             <div className={styles.text}>Vault Strategies are pools of funds with an associated strategy for maximizing returns on the asset in the vault. </div>
             <Row className={styles.totalValueLocked}>$100,000 TVL</Row>
             <Row className={styles.vaults}>
