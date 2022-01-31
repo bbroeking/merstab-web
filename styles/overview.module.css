@@ -27,6 +27,13 @@
 
 @media (max-width: 1000px) {
     .main {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         padding: 0 3%;
+    }
+    .text {
+        width: 80%;
     }
 }

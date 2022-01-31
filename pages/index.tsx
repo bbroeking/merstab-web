@@ -5,12 +5,15 @@ import styles from "../styles/index.module.css";
 import Link from 'next/link';
 import LandingImage from '../components/LandingImage';
 import LandingVideo from '../components/LandingVideo';
+import { useMediaQuery } from 'react-responsive';
 
 const Home: NextPage = () => {
+    const isDesktop = useMediaQuery({
+        query: '(min-width: 770px)'
+    })
     return (
         <div>
-            {/* <LandingImage></LandingImage> */}
-            <LandingVideo></LandingVideo>
+            {isDesktop ? <LandingVideo></LandingVideo> : <LandingImage></LandingImage>}
             <Col className={styles.homeColumn}>
                 <Row className={styles.flexRow} style={{ paddingBottom: 700 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', margin: '0 60px', justifyContent: 'center', alignItems: 'center' }}>
