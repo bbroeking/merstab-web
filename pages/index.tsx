@@ -6,6 +6,7 @@ import Link from 'next/link';
 import LandingImage from '../components/LandingImage';
 import LandingVideo from '../components/LandingVideo';
 import { useMediaQuery } from 'react-responsive';
+import HomeVideo from '../components/HomeVideo';
 
 const Home: NextPage = () => {
     const isDesktop = useMediaQuery({
@@ -14,13 +15,13 @@ const Home: NextPage = () => {
     return (
         <div>
             <Col className={styles.homeColumn}>
-                <Row className={styles.flexRow} style={{ paddingBottom: 700 }}>
+                <Row className={styles.flexRow} style={{ paddingBottom: 200 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', margin: '0 60px', justifyContent: 'center', alignItems: 'center' }}>
                         <div className={styles.earnYieldHeader}>Earn Yield On Your Crypto Assets With Fully-automated DeFi Trading Strategies</div>
                         <Link href='/overview'><Button className={styles.yieldButton}>START EARNING</Button></Link>
                     </div>
                 </Row>
-                {isDesktop ? <LandingVideo></LandingVideo> : <LandingImage></LandingImage>}
+                {isDesktop ? <HomeVideo></HomeVideo> : <LandingImage></LandingImage>}
                 <h2 className={styles.ourMissionLine}><span className={styles.lineSpan}>THE MISSION</span></h2>
                 <Row className={styles.flexRow}>
                     <div className={styles.flexColumn}>
