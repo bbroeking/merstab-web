@@ -7,7 +7,7 @@ import { MerstabClient, Wallet } from '../protocol/merstab';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import * as anchor from '@project-serum/anchor';
 import { civicEnv } from '../pages/_app';
-import { AccountInfo, AccountLayout as TokenAccountLayout } from '@solana/spl-token';
+import { AccountInfo, AccountLayout as TokenAccountLayout, u64 } from '@solana/spl-token';
 import { BN } from '@project-serum/anchor';
 
 const VaultTransfer = () => {
@@ -58,9 +58,9 @@ const VaultTransfer = () => {
     const onInteract = async () => {
         if (!wallet || !wallet.publicKey || !merstabClient) return; // !gatewayToken?.publicKey 
         if (depositActive)
-            await merstabClient.stake(new anchor.BN(amount), wallet.publicKey); //gatewayToken?.publicKey, civicEnv.test.gatekeeperNetwork
+            await merstabClient.stake(new anchor.BN(amount, undefined, "le"), wallet.publicKey); //gatewayToken?.publicKey, civicEnv.test.gatekeeperNetwork
         else
-            await merstabClient.unstake(new anchor.BN(amount), wallet.publicKey);
+            await merstabClient.unstake(new anchor.BN(amount, undefined, "le"), wallet.publicKey);
         fetchBalances();
     }
     return (

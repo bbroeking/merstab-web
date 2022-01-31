@@ -4,11 +4,13 @@ import Image from 'next/image';
 import styles from "../styles/index.module.css";
 import Link from 'next/link';
 import LandingImage from '../components/LandingImage';
+import LandingVideo from '../components/LandingVideo';
 
 const Home: NextPage = () => {
     return (
         <div>
-            <LandingImage></LandingImage>
+            {/* <LandingImage></LandingImage> */}
+            <LandingVideo></LandingVideo>
             <Col className={styles.homeColumn}>
                 <Row className={styles.flexRow} style={{ paddingBottom: 700 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', margin: '0 60px', justifyContent: 'center', alignItems: 'center' }}>

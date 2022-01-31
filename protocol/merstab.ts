@@ -227,13 +227,6 @@ export class MerstabClient {
     }
 
     async unstake(amount: anchor.BN, wallet: PublicKey) {
-        // const coder = new anchor.Coder(idl);
-        // const data = await this.program.provider.connection.getAccountInfo(this.vaultMetadata.vault);
-        // if (!data) return;
-        // const ha = await this.program.coder.accounts.decode("Vault", data.data);
-        // console.log("ha, ", ha);
-        // let market = coder.accounts.decode("Market", account);
-
         const [token_vault_auth_pda, token_vault_auth_bump] = await PublicKey.findProgramAddress(
             [
                 Buffer.from(anchor.utils.bytes.utf8.encode("token_vault_authority")), 

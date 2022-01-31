@@ -110,21 +110,6 @@
                     "name": "tokenProgram",
                     "isMut": false,
                     "isSigner": false
-                },
-                {
-                    "name": "userWallet",
-                    "isMut": false,
-                    "isSigner": false
-                },
-                {
-                    "name": "gatewayToken",
-                    "isMut": false,
-                    "isSigner": false
-                },
-                {
-                    "name": "gatekeeperNetwork",
-                    "isMut": false,
-                    "isSigner": false
                 }
             ],
             "args": [{

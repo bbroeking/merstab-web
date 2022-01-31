@@ -1,5 +1,6 @@
 import React from 'react'
 import LandingImage from '../components/LandingImage';
+import LandingVideo from '../components/LandingVideo';
 import StrategyInfo from '../components/StrategyInfo';
 import VaultDepositsInfo from '../components/VaultDepositsInfo';
 import VaultPerformanceInfo from '../components/VaultPerformanceInfo';
@@ -8,6 +9,7 @@ import styles from '../styles/Vault.module.css';
 
 const Vault = () => {
     return (<div>
+        <LandingVideo></LandingVideo>
         <div className={styles.vaultSection}>
             <div className={styles.vaultDeposits}>
                 <VaultDepositsInfo></VaultDepositsInfo>

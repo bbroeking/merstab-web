@@ -19,7 +19,7 @@ const AppLayout = ({ children = undefined as any }) => {
             <Content className={styles.content} style={{ flexGrow: 1 }}>
                 {children}
             </Content>
-            <Footer className={styles.content} style={{ flexGrow: 0 }}>
+            <Footer className={styles.content} style={{ flexGrow: 0, zIndex: 2 }}>
                 <AppFooter></AppFooter>
             </Footer>
         </Layout>

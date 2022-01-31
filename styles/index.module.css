@@ -180,7 +180,8 @@
 
 .earnYieldHeader {
     font-size: 70px;
-    text-overflow: 'wrap';
+    text-overflow: wrap;
+    text-align: center;
     width: 60%;
     padding-bottom: 20px;
     color: #FFF;

@@ -6,7 +6,7 @@
     padding: 60px 0px;
 }
 
-@media (max-width: 770px) {
+@media (max-width: 1000px) {
     .vaultDepositInfo {
         flex-direction: column;
     }
@@ -26,7 +26,7 @@
     align-items: center;
     flex: 0 1 auto;
     justify-content: flex-start;
-    margin-right: 30px;
+    margin-right: 80px;
 }
 
 .vaultDepositsStatus {

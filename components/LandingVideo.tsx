@@ -2,9 +2,12 @@ import React from 'react';
 import styles from '../styles/LandingVideo.module.css';
 
 const LandingVideo = () => {
-    return <div className={styles.videoWrapper}>
-        <video className={styles.video} src="https://drive.google.com/file/d/1mRe35VUBys_aIVqLJW1XbqSsHD6Zm7-6/preview" loop muted autoPlay></video>
-    </div>
+    return (
+        <div className={styles.vimeoWrapper}>
+            <iframe src="https://player.vimeo.com/video/671765771?background=1&autoplay=1&loop=1&byline=0&title=0"
+                frameBorder="0" allowFullScreen></iframe>
+        </div>
+    )
 };
 
 export default LandingVideo;
