@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../styles/HomeVideo.module.css';
 
-const LandingVideo = () => {
+const HomeVideo = () => {
     return (
         <div className={styles.vimeoWrapper}>
             <iframe src="https://player.vimeo.com/video/671789697?background=1&autoplay=1&loop=1&byline=0&title=0"
@@ -10,4 +10,4 @@ const LandingVideo = () => {
     )
 };
 
-export default LandingVideo;
+export default HomeVideo;

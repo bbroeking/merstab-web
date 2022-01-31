@@ -13,10 +13,10 @@ const AppLayout = ({ children = undefined as any }) => {
             <Head>
                 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap" rel="stylesheet"></link>
             </Head>
-            <Header className={styles.content} style={{ flexGrow: 0 }}>
+            <Header className={styles.content} style={{ flexGrow: 0, zIndex: 2}}>
                 <NavBar></NavBar>
             </Header>
-            <Content className={styles.content} style={{ flexGrow: 1 }}>
+            <Content className={styles.content} style={{ flexGrow: 1, overflow: 'auto' }}>
                 {children}
             </Content>
             <Footer className={styles.content} style={{ flexGrow: 0, zIndex: 2 }}>

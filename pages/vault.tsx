@@ -13,7 +13,7 @@ const Vault = () => {
         query: '(min-width: 770px)'
     })
     return (<div>
-        {isDesktop ? <LandingVideo></LandingVideo> : <LandingImage></LandingImage>}
+        {isDesktop ? <LandingVideo></LandingVideo> : ''}
         <div className={styles.vaultSection}>
             <div className={styles.vaultDeposits}>
                 <VaultDepositsInfo></VaultDepositsInfo>

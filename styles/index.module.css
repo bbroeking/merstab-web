@@ -158,7 +158,7 @@
 }
 
 .ourMissionLine {
-    padding-top: 1125px;
+    padding-top: 650px;
     width: 80%;
     text-align: center;
     border-bottom: 1px solid #DC5355;
@@ -232,9 +232,8 @@
     }
 }
 
-
-/* @media (max-width: 1000px) {
-    .main {
-        padding: 0 3%;
+@media (max-width: 770px) {
+    .ourMissionLine {
+        padding-top: 0px;
     }
-} */
+}
