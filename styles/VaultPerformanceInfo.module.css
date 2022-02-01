@@ -47,6 +47,12 @@
     }
 }
 
+@media (max-width: 1000px) {
+    .metricRow {
+        grid-template-columns: repeat(1, minmax(50px, 1fr));
+    }
+}
+
 @media (max-width: 770px) {
     .metrics {
         flex-direction: column;

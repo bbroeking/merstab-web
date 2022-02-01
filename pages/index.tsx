@@ -23,7 +23,7 @@ const Home: NextPage = () => {
                     </div>
                 </Row>
                 <div className={styles.missionSection}>
-                    <div>
+                    <div className={styles.missionWrapper}>
                         <h2 className={styles.ourMissionLine}>
                             <span className={styles.lineSpan}>THE MISSION</span>
                         </h2>
@@ -35,7 +35,7 @@ const Home: NextPage = () => {
                             <Button className={styles.learnMore}>LEARN MORE</Button>
                         </div>
                     </Row>
-                    <h2 className={styles.line}></h2>
+                    <h2 className={styles.missionBottomLine}></h2>
                 </div>
                 <Row className={styles.flexRow}>
                     <div className={styles.flexColumnProducts}>

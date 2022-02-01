@@ -69,4 +69,7 @@
     .text {
         width: 80%;
     }
+    .vaults {
+        padding-bottom: 200px;
+    }
 }

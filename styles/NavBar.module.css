@@ -82,4 +82,13 @@
     .walletButton {
         display: none !important;
     }
+    .icon {
+        display: flex;
+        padding-left: 20px;
+        cursor: pointer;
+        align-items: center;
+    }
+    .launchApp {
+        padding: 16px;
+    }
 }
