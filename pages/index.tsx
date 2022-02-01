@@ -4,18 +4,19 @@ import Image from 'next/image';
 import styles from "../styles/index.module.css";
 import Link from 'next/link';
 import LandingImage from '../components/LandingImage';
-import LandingVideo from '../components/LandingVideo';
 import { useMediaQuery } from 'react-responsive';
-import HomeVideo from '../components/HomeVideo';
 
 const Home: NextPage = () => {
     const isDesktop = useMediaQuery({
         query: '(min-width: 770px)'
     })
     return (
-        <div style={{overflow: 'scroll'}}>
+        <div style={{ overflow: 'scroll' }}>
             <Col className={styles.homeColumn}>
-            {isDesktop ? <HomeVideo></HomeVideo> : ''}
+                <div className={styles.vimeoWrapper}>
+                    <iframe src="https://player.vimeo.com/video/671789697?background=1&autoplay=1&loop=1&byline=0&title=0" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe>
+                </div>
+                {/* {isDesktop ? <HomeVideo></HomeVideo> : ''} */}
 
                 <Row className={styles.flexRow} style={{ paddingBottom: 200 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -23,15 +24,17 @@ const Home: NextPage = () => {
                         <Link href='/overview'><Button className={styles.yieldButton}>START EARNING</Button></Link>
                     </div>
                 </Row>
-                <h2 className={styles.ourMissionLine}><span className={styles.lineSpan}>THE MISSION</span></h2>
-                <Row className={styles.flexRow}>
-                    <div className={styles.flexColumn}>
-                        <div className={styles.sectionHeader}>Stabilizing the DeFi Derivatives Market Through Optimizing Market Inefficiencies</div>
-                        <div className={styles.text} style={{ width: 'unset', paddingBottom: 10 }}>We believe DeFi will become the underlying core infrastructure of the global financial market. Our mission is to help the industry achieve a higher level of adoption by optimizing market inefficiencies. </div>
-                        <Button className={styles.learnMore}>LEARN MORE</Button>
-                    </div>
-                </Row>
-                <h2 className={styles.line}></h2>
+                <div className={styles.missionSection}>
+                    <h2 className={styles.ourMissionLine}><span className={styles.lineSpan}>THE MISSION</span></h2>
+                    <Row className={styles.flexRow}>
+                        <div className={styles.missionFlexColumn}>
+                            <div className={styles.sectionHeader}>Stabilizing the DeFi Derivatives Market Through Optimizing Market Inefficiencies</div>
+                            <div className={styles.text} style={{ width: 'unset', paddingBottom: 10 }}>We believe DeFi will become the underlying core infrastructure of the global financial market. Our mission is to help the industry achieve a higher level of adoption by optimizing market inefficiencies. </div>
+                            <Button className={styles.learnMore}>LEARN MORE</Button>
+                        </div>
+                    </Row>
+                    <h2 className={styles.line}></h2>
+                </div>
                 <Row className={styles.flexRow}>
                     <div className={styles.flexColumn}>
                         <h3 style={{ paddingBottom: 60 }}>OUR PRODUCTS</h3>

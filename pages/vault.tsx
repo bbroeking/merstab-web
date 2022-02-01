@@ -1,7 +1,6 @@
 import React from 'react'
 import { useMediaQuery } from 'react-responsive';
 import LandingImage from '../components/LandingImage';
-import LandingVideo from '../components/LandingVideo';
 import StrategyInfo from '../components/StrategyInfo';
 import VaultDepositsInfo from '../components/VaultDepositsInfo';
 import VaultPerformanceInfo from '../components/VaultPerformanceInfo';
@@ -13,7 +12,9 @@ const Vault = () => {
         query: '(min-width: 770px)'
     })
     return (<div>
-        {isDesktop ? <LandingVideo></LandingVideo> : ''}
+        <div className={styles.vimeoWrapper}>
+            <iframe src="https://player.vimeo.com/video/671789697?background=1&autoplay=1&loop=1&byline=0&title=0" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe>
+        </div>
         <div className={styles.vaultSection}>
             <div className={styles.vaultDeposits}>
                 <VaultDepositsInfo></VaultDepositsInfo>

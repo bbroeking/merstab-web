@@ -13,7 +13,7 @@ const NavBar = () => {
     return (
         <div className={styles.navRow}>
             <div className={styles.icon}>
-                <Image src="/svg/logo.svg" alt='merstab logo' width={120} height={120}></Image>
+                <Link href={'/'}><Image src="/svg/logo.svg" alt='merstab logo' width={120} height={120}></Image></Link>
             </div>
             <div className={styles.navTabs}>
                 <Link href={'/'} >
