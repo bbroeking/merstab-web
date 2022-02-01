@@ -1,11 +1,16 @@
+.vaultPageWrapper {
+    display: flex;
+    justify-content: center;
+}
+
 .vaultSection {
     display: flex;
     flex-direction: column;
-    padding: 0px 10%;
     flex-grow: 1;
     align-items: stretch;
     position: relative;
     z-index: 1;
+    max-width: 1424px;
 }
 
 @media (max-width: 1000px) {

@@ -10,7 +10,8 @@
 }
 
 .vaultCard:hover {
-    box-shadow: 0px 2px 5px 2px #DC5355;
+    filter: drop-shadow(0px 1px 32px #D74B5E);
+    border: 1px solid #DC5355;
 }
 
 .assetInfo {

@@ -1,13 +1,14 @@
 import React from 'react';
+import styles from '../styles/MetricTile.module.css';
 
 export interface MetricTileProps {
     metric: string,
     metricTitle: string
 }
 const MetricTile = (props: MetricTileProps) => {
-  return <div style={{display: 'flex', flexDirection: 'column', margin: 20, flexGrow: 1, alignItems: 'center'}}>
-      <div style={{ fontSize: '16', color: '#FFF', textAlign: 'center', paddingBottom: 4 }}>{props.metric}</div>
-      <div style={{fontSize: '12', color: '#bfb6b6', textAlign: 'center'}}>{props.metricTitle}</div>
+  return <div className={styles.tile}>
+      <div className={styles.metric}>{props.metric}</div>
+      <div className={styles.metricTile}>{props.metricTitle}</div>
   </div>;
 };
 

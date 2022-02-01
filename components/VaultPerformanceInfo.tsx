@@ -27,7 +27,7 @@ const VaultPerformanceInfo = () => {
         { key: 9, metric: '-1.53%', metricTitle: 'Avg Loss' },
         { key: 10, metric: '126.65%', metricTitle: 'Long Returns' },
         { key: 11, metric: '0%', metricTitle: 'Short Returns' },
-        { key: 12, metric: '1d 14h', metricTitle: 'Avg Exposure' }
+        { key: 12, metric: '1d 14h', metricTitle: 'Avg Exposure' },
     ];
 
     // fetch

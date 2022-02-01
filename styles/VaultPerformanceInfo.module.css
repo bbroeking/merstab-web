@@ -33,12 +33,16 @@
 }
 
 .metricRow {
-    display: flex;
-    flex-grow: 1;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(50px, 1fr));
+    width: 100%;
+    align-items: center;
+    justify-content: space-evenly;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1450px) {
     .vaultPerformanceInfo {
+        padding: 0 10%;
         flex-direction: column;
     }
 }

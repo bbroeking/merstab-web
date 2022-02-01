@@ -11,7 +11,7 @@ const Vault = () => {
     const isDesktop = useMediaQuery({
         query: '(min-width: 770px)'
     })
-    return (<div>
+    return (<div className={styles.vaultPageWrapper}>
         <div className={styles.vimeoWrapper}>
             <iframe src="https://player.vimeo.com/video/671789697?background=1&autoplay=1&loop=1&byline=0&title=0" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe>
         </div>

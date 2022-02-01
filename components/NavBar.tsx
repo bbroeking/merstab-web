@@ -1,19 +1,20 @@
 import { useWallet } from '@solana/wallet-adapter-react'
-import { WalletModalButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react'
 import styles from '../styles/NavBar.module.css';
 import CivicVerification from './CivicVerification';
 import Image from 'next/image';
+import { Button } from 'antd';
 
 const NavBar = () => {
     const wallet = useWallet();
     const router = useRouter();
     return (
-        <div className={styles.navRow}>
+        <div className={router.pathname == "/" ? styles.navRow : styles.navRowBoxShadow}>
             <div className={styles.icon}>
-                <Link href={'/'}><Image src="/svg/logo.svg" alt='merstab logo' width={120} height={120}></Image></Link>
+                <Link href={'/'}><Image src="/svg/logo.svg" alt='merstab logo' width={96} height={96}></Image></Link>
             </div>
             <div className={styles.navTabs}>
                 <Link href={'/'} >
@@ -25,13 +26,16 @@ const NavBar = () => {
             </div>
             <div className={styles.connectWallet}>
                 {/* { wallet.publicKey && <CivicVerification />} */}
-                <WalletMultiButton 
-                    startIcon={<img src="svg/wallet.svg" alt="wallet icon" height={8} width={8} />}
-                    className={styles.walletButton}>
+                {router.pathname === "/" ? 
+                    <Link href={'/overview'}><Button className={styles.launchApp}>LAUNCH APP</Button></Link> :
+                    <WalletMultiButton
+                        startIcon={<img src="svg/wallet.svg" alt="wallet icon" height={8} width={8} />}
+                        className={styles.walletButton}>
                         {wallet.connected ?
-                         `...${wallet.publicKey?.toString().slice(-4)}` : 
-                         'Connect Wallet'}
-                </WalletMultiButton>
+                            `...${wallet.publicKey?.toString().slice(-4)}` :
+                            'Connect Wallet'}
+                    </WalletMultiButton>
+                }
             </div>
         </div>
     )

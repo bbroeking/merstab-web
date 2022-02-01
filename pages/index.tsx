@@ -16,8 +16,6 @@ const Home: NextPage = () => {
                 <div className={styles.vimeoWrapper}>
                     <iframe src="https://player.vimeo.com/video/671789697?background=1&autoplay=1&loop=1&byline=0&title=0" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe>
                 </div>
-                {/* {isDesktop ? <HomeVideo></HomeVideo> : ''} */}
-
                 <Row className={styles.flexRow} style={{ paddingBottom: 200 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div className={styles.earnYieldHeader}>Earn Yield On Your Crypto Assets With Fully-automated DeFi Trading Strategies</div>
@@ -25,7 +23,11 @@ const Home: NextPage = () => {
                     </div>
                 </Row>
                 <div className={styles.missionSection}>
-                    <h2 className={styles.ourMissionLine}><span className={styles.lineSpan}>THE MISSION</span></h2>
+                    <div>
+                        <h2 className={styles.ourMissionLine}>
+                            <span className={styles.lineSpan}>THE MISSION</span>
+                        </h2>
+                    </div>
                     <Row className={styles.flexRow}>
                         <div className={styles.missionFlexColumn}>
                             <div className={styles.sectionHeader}>Stabilizing the DeFi Derivatives Market Through Optimizing Market Inefficiencies</div>
@@ -36,7 +38,7 @@ const Home: NextPage = () => {
                     <h2 className={styles.line}></h2>
                 </div>
                 <Row className={styles.flexRow}>
-                    <div className={styles.flexColumn}>
+                    <div className={styles.flexColumnProducts}>
                         <h3 style={{ paddingBottom: 60 }}>OUR PRODUCTS</h3>
                         <div className={styles.ourProductsSection}>
                             <div className={`${styles.text} ${styles.flexColumn}`}>
@@ -70,8 +72,8 @@ const Home: NextPage = () => {
                 <Row className={styles.teamSection}>
                     <div>
                         <h1 className={styles.teamHeader}>THE TEAM</h1>
-                        <div className={styles.teamText}>Here at Merstab, we work hard to build a decentralized infrastructure that helps stabilize the DeFi derivatives market at an early stage by providing liquidity more efficiently.</div>
-                        <div className={styles.teamText}>Our team of quants, DevOps specialists, on-chain developers, and market analysts came together to build an infrastructure that provides better returns to investors and optimizes market inefficiencies.</div>
+                        <div className={styles.teamText}>At Merstab, we are building a decentralized infrastructure that optimizes market inefficiencies in Decentralized Finance.</div>
+                        <div className={styles.teamText}>Our team of quants, DevOps specialists, on-chain developers, and market analysts came together and built an infrastructure to provide better returns to investors and help the industry achieve wider market adoption.</div>
                         <Button className={styles.yieldButton}>CONTACT US</Button>
 
                     </div>
