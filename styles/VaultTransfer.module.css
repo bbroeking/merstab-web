@@ -52,6 +52,10 @@
     width: 220px;
     border: 0;
     background-color: #1A1A1A;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    letter-spacing: 0.5px;
 }
 
 .transactionButton:hover {
@@ -134,6 +138,7 @@
 
 .active {
     border-bottom: 1px solid #DC5355;
+    color: #FFF;
 }
 
 .spacer {

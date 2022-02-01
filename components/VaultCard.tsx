@@ -44,7 +44,7 @@ const VaultCard = () => {
             <div className={styles.vaultCard}>
                 <Row className={styles.assetInfo}>
                     <div className={styles.spacer}></div>
-                    <Image src="/svg/btcperp.svg" alt='bitcoin and usdc pair' width={60} height={60}></Image>
+                    <Image src="/svg/btcperp.svg" alt='bitcoin and usdc pair' width={80} height={80}></Image>
                     <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 10 }}>
                         <span style={{ fontSize: '24px', color: '#FFF' }}>BTC-PERP</span>
                         <span>Perpetual Futures Vault</span>

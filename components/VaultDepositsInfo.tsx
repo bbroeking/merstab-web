@@ -27,7 +27,7 @@ const VaultDepositsInfo = () => {
     return (
         <div className={styles.vaultDepositInfo}>
             <div className={styles.infoAssetIcon}>
-                <Image src="/svg/btcperp.svg" alt='bitcoin and usdc pair' width={120} height={120}></Image>
+                <Image src="/svg/btcperp.svg" alt='bitcoin and usdc pair' width={160} height={160}></Image>
                 <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 20}}>
                 <span style={{ fontSize: '46px', color: '#FFF' }}>BTC-PERP</span>
                 <span>Perpetual Futures Market Making Vault</span>

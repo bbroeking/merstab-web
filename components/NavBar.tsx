@@ -17,16 +17,22 @@ const NavBar = () => {
                 <Link href={'/'}><Image src="/svg/logo.svg" alt='merstab logo' width={96} height={96}></Image></Link>
             </div>
             <div className={styles.navTabs}>
-                <Link href={'/'} >
-                    <a className={`${styles.navItem} ${router.pathname == "/" ? styles.active : ""}`} >HOME</a>
-                </Link>
-                <Link href={'/overview'}>
-                    <a className={`${styles.navItem} ${router.pathname !== "/" ? styles.active : ""}`} >VAULTS</a>
-                </Link>
+                {router.pathname !== '/' ?
+                    <>
+                        <Link href={'/'} >
+                            <a className={`${styles.navItem} ${router.pathname == "/" ? styles.active : ""}`} >HOME</a>
+                        </Link>
+                        <Link href={'/overview'}>
+                            <a className={`${styles.navItem} ${router.pathname !== "/" ? styles.active : ""}`} >VAULTS</a>
+                        </Link>
+                    </>
+                    : ''
+                }
+
             </div>
             <div className={styles.connectWallet}>
                 {/* { wallet.publicKey && <CivicVerification />} */}
-                {router.pathname === "/" ? 
+                {router.pathname === "/" ?
                     <Link href={'/overview'}><Button className={styles.launchApp}>LAUNCH APP</Button></Link> :
                     <WalletMultiButton
                         startIcon={<img src="svg/wallet.svg" alt="wallet icon" height={8} width={8} />}

@@ -47,7 +47,7 @@ const Home: NextPage = () => {
                             </div>
                             <div className={styles.marketMakingVault}>
                                 <div className={styles.vaultHeader} style={{ alignSelf: 'center', paddingBottom: 20 }}>Market Making Vault</div>
-                                <Image src="/svg/btcperp.svg" alt='bitcoin and usdc pair' width={180} height={180}></Image>
+                                <Image src="/svg/btcperp.svg" alt='bitcoin and usdc pair' width={240} height={240}></Image>
                                 <div className={styles.apy}>22.1% <span className={styles.vaultText}>Projected Apy</span></div>
                                 <div>
                                     <Row style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 8 }}>
@@ -70,7 +70,7 @@ const Home: NextPage = () => {
                     </div>
                 </Row>
                 <Row className={styles.teamSection}>
-                    <div>
+                    <div className={styles.teamSectionText}>
                         <h1 className={styles.teamHeader}>THE TEAM</h1>
                         <div className={styles.teamText}>At Merstab, we are building a decentralized infrastructure that optimizes market inefficiencies in Decentralized Finance.</div>
                         <div className={styles.teamText}>Our team of quants, DevOps specialists, on-chain developers, and market analysts came together and built an infrastructure to provide better returns to investors and help the industry achieve wider market adoption.</div>
