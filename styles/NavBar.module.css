@@ -72,6 +72,7 @@
     border-radius: 2px;
     margin-right: 10px;
     cursor: pointer;
+    line-height: unset !important;
 }
 
 .wallet-adapter-dropdown-list {
