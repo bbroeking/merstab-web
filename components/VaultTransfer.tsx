@@ -33,16 +33,31 @@ const VaultTransfer = () => {
     }, []);
 
     const fetchBalances = async () => {
-        if (!merstabClient || !wallet.publicKey) return;
-        const tokenAccount = await merstabClient.getTokenAccount(wallet.publicKey!);
-        const stakedTokenAccount = await merstabClient.getStakedTokenAccount(wallet.publicKey!);
+        if (!merstabClient || !wallet || !wallet.publicKey) return;
+        const tokenAccount = await merstabClient.getTokenAccount(wallet.publicKey);
+        const stakedTokenAccount = await merstabClient.getStakedTokenAccount(wallet.publicKey);
         const tokenAccountData = await connection.connection.getAccountInfo(tokenAccount);
         const stakedTokenAccountData = await connection.connection.getAccountInfo(stakedTokenAccount);
-        const parsedTokenAccountData = TokenAccountLayout.decode(tokenAccountData?.data) as AccountInfo;
-        const parsedStakedTokenAccountData = TokenAccountLayout.decode(stakedTokenAccountData?.data) as AccountInfo;
 
-        setPosition(new BN(parsedStakedTokenAccountData.amount, undefined, "le").toNumber());
-        setWalletBalance(new BN(parsedTokenAccountData.amount, undefined, "le").toNumber());
+        try {
+            if (tokenAccountData) {
+                const parsedTokenAccountData = TokenAccountLayout.decode(tokenAccountData?.data) as AccountInfo;
+                setWalletBalance(new BN(parsedTokenAccountData.amount, undefined, "le").toNumber());
+            } else {
+                setWalletBalance(0);
+            }
+            if (stakedTokenAccountData) {
+                const parsedStakedTokenAccountData = TokenAccountLayout.decode(stakedTokenAccountData?.data) as AccountInfo;
+                setPosition(new BN(parsedStakedTokenAccountData.amount, undefined, "le").toNumber());
+            } else {
+                setPosition(0);
+            }
+
+        } catch (err) {
+            console.log('Error fetching balances: ', err);
+            setPosition(0);
+            setWalletBalance(0);
+        }
     }
 
     useEffect(() => {

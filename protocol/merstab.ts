@@ -96,8 +96,9 @@ export async function getOrInitTokenAccounts(
     );
     console.log(`ATA: ${ata.toBase58()}`);
 
-    // create account if doesn't exist
-    if (!merstabClient.program.provider.connection.getAccountInfo(ata)) {
+    // create account if doesn't exist -- testing
+    const tokenAccountData = await merstabClient.program.provider.connection.getAccountInfo(ata)
+    if (!tokenAccountData) {
         let tx = new Transaction().add(
             Token.createAssociatedTokenAccountInstruction(
                 ASSOCIATED_TOKEN_PROGRAM_ID, // always ASSOCIATED_TOKEN_PROGRAM_ID
@@ -125,18 +126,18 @@ export async function getOrInitTokenAccounts(
     );
     console.log(`Staked ATA: ${stakedATA.toBase58()}`);
 
-    if (!merstabClient.program.provider.connection.getAccountInfo(stakedATA)) {
-
-        let tx = new Transaction().add(
-            Token.createAssociatedTokenAccountInstruction(
-                ASSOCIATED_TOKEN_PROGRAM_ID, // always ASSOCIATED_TOKEN_PROGRAM_ID
-                TOKEN_PROGRAM_ID, // always TOKEN_PROGRAM_ID
-                vaultMetadata.stakedTokenMint, // mint
-                stakedATA, // ata
-                walletPubKey, // owner of token account
-                walletPubKey // fee payer
-            )
-        );
+    const stakedAccountData = await merstabClient.program.provider.connection.getAccountInfo(stakedATA)
+    if (!stakedAccountData) {
+        let tx = new Transaction();
+        const ix = Token.createAssociatedTokenAccountInstruction(
+            ASSOCIATED_TOKEN_PROGRAM_ID, // always ASSOCIATED_TOKEN_PROGRAM_ID
+            TOKEN_PROGRAM_ID, // always TOKEN_PROGRAM_ID
+            vaultMetadata.stakedTokenMint, // mint
+            stakedATA, // ata
+            walletPubKey, // owner of token account
+            walletPubKey // fee payer
+        )
+        tx.add(ix);
         try {
             const txId = await merstabClient.program.provider.send(tx)
             console.log(`txhash- create account: ${txId}`);

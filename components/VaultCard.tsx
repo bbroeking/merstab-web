@@ -7,7 +7,7 @@ import { MerstabClient, Wallet } from '../protocol/merstab';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import * as anchor from '@project-serum/anchor';
 import { VAULT_CAPACITY } from './VaultDepositsInfo';
-import { AccountLayout as TokenAccountLayout } from '@solana/spl-token';
+import { AccountInfo, AccountLayout as TokenAccountLayout } from '@solana/spl-token';
 
 const VaultCard = () => {
     const connection = useConnection();
@@ -28,11 +28,22 @@ const VaultCard = () => {
     }, []);
 
     const fetchBalances = async () => {
-        if(!merstabClient || !wallet.publicKey) return;
-        const stakedTokenAccount = await merstabClient.getStakedTokenAccount(wallet.publicKey!);
+        if (!merstabClient || !wallet || !wallet.publicKey) return;
+        const stakedTokenAccount = await merstabClient.getStakedTokenAccount(wallet.publicKey);
         const stakedTokenAccountData = await connection.connection.getAccountInfo(stakedTokenAccount);
-        const parsedStakedTokenAccountData = TokenAccountLayout.decode(stakedTokenAccountData?.data);
-        setPosition(new anchor.BN(parsedStakedTokenAccountData.amount, undefined, "le").toNumber());
+
+        try {
+            if (stakedTokenAccountData) {
+                const parsedStakedTokenAccountData = TokenAccountLayout.decode(stakedTokenAccountData?.data) as AccountInfo;
+                setPosition(new anchor.BN(parsedStakedTokenAccountData.amount, undefined, "le").toNumber());
+            } else {
+                setPosition(0);
+            }
+
+        } catch (err) {
+            console.log('Error fetching balances: ', err);
+            setPosition(0);
+        }
     }
 
     useEffect(() => {
