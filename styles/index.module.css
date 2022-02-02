@@ -166,7 +166,6 @@
     align-items: center;
     justify-content: center;
     padding: 0 20px;
-    text-align: center;
 }
 
 .line {
@@ -244,7 +243,7 @@
 
 .teamSection {
     display: flex;
-    padding: 280px 50px;
+    padding: 280px 150px;
     background: #1E1F1F;
     justify-content: space-around;
     align-items: center;
@@ -342,5 +341,8 @@
     }
     .teamText {
         width: unset;
+    }
+    .text {
+        text-align: center;
     }
 }
