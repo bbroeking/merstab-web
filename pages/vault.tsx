@@ -4,7 +4,7 @@ import StrategyInfo from '../components/StrategyInfo';
 import VaultDepositsInfo from '../components/VaultDepositsInfo';
 import VaultPerformanceInfo from '../components/VaultPerformanceInfo';
 import VaultTransfer from '../components/VaultTransfer';
-import styles from '../styles/vault.module.css';
+import styles from '../styles/Vault.module.css';
 import Image from 'next/image';
 
 const Vault = () => {
