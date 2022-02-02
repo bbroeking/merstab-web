@@ -99,5 +99,6 @@
     }
     .main {
         overflow: hidden;
+        width: unset;
     }
 }

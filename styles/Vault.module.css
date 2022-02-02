@@ -1,6 +1,7 @@
 .vaultPageWrapper {
     display: flex;
     justify-content: center;
+    padding: 0 3%;
 }
 
 .vaultSection {
@@ -13,7 +14,7 @@
     z-index: 1;
     max-width: 1424px;
     overflow: hidden;
-    padding: 0 3%;
+    padding: 0 1%;
 }
 
 .vimeoWrapper {
@@ -101,6 +102,9 @@
 }
 
 @media (max-width: 770px) {
+    .vaultSection {
+        padding: 0;
+    }
     .vaultTransactions {
         padding-bottom: 0;
     }

@@ -16,7 +16,7 @@ const AppLayout = ({ children = undefined as any }) => {
             <Header className={styles.content} style={{ flexGrow: 0, zIndex: 2}}>
                 <NavBar></NavBar>
             </Header>
-            <Content className={styles.content} style={{ flexGrow: 1, overflowX: 'hidden', display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
+            <Content className={styles.content} style={{ flexGrow: 1, overflowX: 'hidden', alignItems: 'center', flexDirection: 'column'}}>
                 {children}
             </Content>
             <Footer className={styles.content} style={{ flexGrow: 0, zIndex: 2 }}>

@@ -37,7 +37,6 @@
         flex-direction: column;
     }
     .infoAssetIcon {
-        align-items: unset;
         padding-bottom: 30px;
     }
     .vaultDepositsStatus {
@@ -49,6 +48,12 @@
 
 @media (max-width: 770px) {
     .infoAssetIcon {
-        margin-right: 5px;
+        margin-right: 0;
+    }
+    .depositInfo {
+        font-size: 12px;
+    }
+    .vaultDepositsStatus {
+        margin-right: 0;
     }
 }

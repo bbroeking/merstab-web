@@ -56,27 +56,30 @@ const Home: NextPage = () => {
                                 <h1 className={styles.perpHeader}>BTC-PERP</h1>
                                 <div className={styles.btcPerpDescription}>Generates yield through deploying a market making strategy on Mango Markets</div>
                             </div>
-                            <div className={styles.marketMakingVault}>
-                                <div className={styles.vaultHeader} style={{ alignSelf: 'center', paddingBottom: 20 }}>Market Making Vault</div>
-                                <Image src="/svg/btcperp.svg" alt='bitcoin and usdc pair' width={240} height={240}></Image>
-                                <div className={styles.apy}>22.1% <span className={styles.vaultText}>Projected Apy</span></div>
-                                <div>
-                                    <Row style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 8 }}>
-                                        <span className={styles.vaultText}>Deposits</span>
-                                        <span className={styles.vaultText}>223,601 USDC</span>
-                                    </Row>
-                                    <Progress
-                                        strokeColor='#D74B5E'
-                                        strokeLinecap='square'
-                                        trailColor='#474747'
-                                        percent={23}
-                                        showInfo={false} />
-                                    <Row style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8 }}>
-                                        <span className={styles.vaultText}>Capacity</span>
-                                        <span className={styles.vaultText}>1,000,000 USDC</span>
-                                    </Row>
+                            <Link href={'/vault'}>
+                                <div className={styles.marketMakingVault}>
+                                    <div className={styles.vaultHeader} style={{ alignSelf: 'center', paddingBottom: 20 }}>Market Making Vault</div>
+                                    <Image src="/svg/btcperp.svg" alt='bitcoin and usdc pair' width={240} height={240}></Image>
+                                    <div className={styles.apy}>22.1% <span className={styles.vaultText}>Projected Apy</span></div>
+                                    <div>
+                                        <Row style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 8 }}>
+                                            <span className={styles.vaultText}>Deposits</span>
+                                            <span className={styles.vaultText}>223,601 USDC</span>
+                                        </Row>
+                                        <Progress
+                                            strokeColor='#D74B5E'
+                                            strokeLinecap='square'
+                                            trailColor='#474747'
+                                            percent={23}
+                                            showInfo={false} />
+                                        <Row style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8 }}>
+                                            <span className={styles.vaultText}>Capacity</span>
+                                            <span className={styles.vaultText}>1,000,000 USDC</span>
+                                        </Row>
+                                    </div>
                                 </div>
-                            </div>
+
+                            </Link>
                         </div>
                     </div>
                 </Row>
