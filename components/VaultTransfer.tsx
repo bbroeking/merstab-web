@@ -1,12 +1,10 @@
-import { useGateway, GatewayStatus } from '@civic/solana-gateway-react';
 import { Button, Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react'
 import styles from '../styles/VaultTransfer.module.css';
 import Image from 'next/image';
 import { MerstabClient, Wallet } from '../protocol/merstab';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
 import * as anchor from '@project-serum/anchor';
-import { civicEnv } from '../pages/_app';
 import { AccountInfo, AccountLayout as TokenAccountLayout, u64 } from '@solana/spl-token';
 import { BN } from '@project-serum/anchor';
 
@@ -16,15 +14,20 @@ const VaultTransfer = () => {
     const [position, setPosition] = useState(0);
     const [walletBalance, setWalletBalance] = useState(0);
     const [merstabClient, setMerstabClient] = useState<MerstabClient>();
+    const anchorWallet = useAnchorWallet();
     // const { gatewayStatus, gatewayToken } = useGateway();
     const connection = useConnection();
     const wallet = useWallet();
 
+    const setupClient = async () => {
+        const provider = new anchor.Provider(connection.connection, anchorWallet as Wallet, anchor.Provider.defaultOptions());
+        const client = await MerstabClient.connect(provider, true);
+        setMerstabClient(client);
+    }
+
     useEffect(() => {
-        const setupClient = async () => {
-            const provider = new anchor.Provider(connection.connection, wallet as Wallet, anchor.Provider.defaultOptions());
-            const client = await MerstabClient.connect(provider, true);
-            setMerstabClient(client);
+        if (!anchorWallet) {
+            console.log("anchor wallet undefined")
         }
         setupClient();
     }, []);
@@ -56,7 +59,15 @@ const VaultTransfer = () => {
     }
 
     const onInteract = async () => {
-        if (!wallet || !wallet.publicKey || !merstabClient) return; // !gatewayToken?.publicKey 
+        if (!wallet || !wallet.publicKey || !merstabClient) {
+            console.log('Error establishing connection');
+            console.log({ wallet, merstabClient });
+            console.log('Attempting to establish connection to wallet');
+            await wallet.connect();
+            await setupClient();
+
+            if(!wallet || !wallet.publicKey || !merstabClient) return;
+        };
         if (depositActive)
             await merstabClient.stake(new anchor.BN(amount, undefined, "le"), wallet.publicKey); //gatewayToken?.publicKey, civicEnv.test.gatekeeperNetwork
         else

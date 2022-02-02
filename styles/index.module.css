@@ -55,8 +55,8 @@
 }
 
 .teamText {
+    width: 50%;
     padding-bottom: 20px;
-    width: 500px;
     font-family: Rubik;
     font-style: normal;
     font-weight: normal;
@@ -133,7 +133,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 200px 0px;
+    padding: 15vh 0px;
 }
 
 .flexColumn {
@@ -214,7 +214,7 @@
 .lineSpan {
     background: transparent;
     background: linear-gradient(90deg, #E15D47 -12.4%, #C62E85 112.8%);
-    -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -270,8 +270,7 @@
     width: 100vw;
     height: 68.25vw;
     /* Given a 16:9 aspect ratio, 9/16*100 = 56.25 */
-    min-height: 100vh;
-    min-width: 177.77vh;
+    min-height: 100%;
     /* Given a 16:9 aspect ratio, 16/9*100 = 177.77 */
     position: absolute;
     top: 50%;
@@ -339,6 +338,9 @@
         padding-top: 0px;
     }
     .missionFlexColumn {
+        width: unset;
+    }
+    .teamText {
         width: unset;
     }
 }
