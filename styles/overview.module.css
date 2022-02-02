@@ -2,10 +2,7 @@
     padding: 0 10% 150px;
     z-index: 1;
     position: relative;
-}
-
-.text {
-    width: 45%;
+    overflow: hidden;
 }
 
 .totalValueLocked {
@@ -34,12 +31,12 @@
 }
 
 .vimeoWrapper {
-    position: fixed;
-    top: 500px;
+    position: absolute;
+    top: 400px;
     left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
+    width: 100vw;
+    height: 66.66vw;
+    z-index: -1;
     pointer-events: none;
     overflow: hidden;
 }
@@ -75,6 +72,10 @@
     width: 100% !important;
     position: relative !important;
     height: unset !important;
+}
+
+.text {
+    width: 45%;
 }
 
 @media (max-width: 1000px) {
