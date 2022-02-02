@@ -57,6 +57,26 @@
     transform: translate(-50%, -50%);
 }
 
+.wavePosition {
+    position: absolute;
+    z-index: -1;
+    top: 90vh;
+}
+
+.imageContainer {
+    position: 'absolute';
+    top: 0;
+    width: 100vw;
+    height: 66.66vw;
+}
+
+.landingImage {
+    object-fit: contain;
+    width: 100% !important;
+    position: relative !important;
+    height: unset !important;
+}
+
 @media (max-width: 1000px) {
     .main {
         display: flex;
@@ -76,5 +96,8 @@
 @media (max-width: 770px) {
     .totalValueLocked {
         width: 80%;
+    }
+    .main {
+        overflow: hidden;
     }
 }

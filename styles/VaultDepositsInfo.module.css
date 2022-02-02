@@ -6,21 +6,6 @@
     padding: 60px 0px;
 }
 
-@media (max-width: 1000px) {
-    .vaultDepositInfo {
-        flex-direction: column;
-    }
-    .infoAssetIcon {
-        align-items: unset;
-        padding-bottom: 30px;
-    }
-    .vaultDepositsStatus {
-        flex: unset;
-        align-self: unset;
-        width: 80%;
-    }
-}
-
 .infoAssetIcon {
     display: flex;
     align-items: center;
@@ -45,4 +30,25 @@
     letter-spacing: 0.15px;
     /* Text/Secondary */
     color: rgba(255, 255, 255, 0.74);
+}
+
+@media (max-width: 1000px) {
+    .vaultDepositInfo {
+        flex-direction: column;
+    }
+    .infoAssetIcon {
+        align-items: unset;
+        padding-bottom: 30px;
+    }
+    .vaultDepositsStatus {
+        flex: unset;
+        align-self: unset;
+        width: 80%;
+    }
+}
+
+@media (max-width: 770px) {
+    .infoAssetIcon {
+        margin-right: 5px;
+    }
 }

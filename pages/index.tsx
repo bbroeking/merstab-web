@@ -13,9 +13,20 @@ const Home: NextPage = () => {
     return (
         <div>
             <Col className={styles.homeColumn}>
-                <div className={styles.vimeoWrapper}>
+                {isDesktop ? <div className={styles.vimeoWrapper}>
                     <iframe src="https://player.vimeo.com/video/671789697?background=1&autoplay=1&loop=1&byline=0&title=0" frameBorder="0" allow="autoplay; fullscreen" allowFullScreen></iframe>
                 </div>
+                    : <div className={styles.wavePosition}>
+                        <div className={styles.imageContainer}>
+                            <Image
+                                className={styles.landingImage}
+                                src="/wave.png"
+                                alt='waves'
+                                layout='fill'
+                                objectFit='cover'
+                            ></Image>
+                        </div>
+                    </div>}
                 <Row className={styles.flexRow} style={{ paddingBottom: 200 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div className={styles.earnYieldHeader}>Earn Yield On Your Crypto Assets With Fully-automated DeFi Trading Strategies</div>

@@ -144,3 +144,13 @@
 .spacer {
     width: 8px;
 }
+
+@media (max-width: 770px) {
+    .transferSection {
+        display: unset;
+        justify-content: unset;
+        align-items: unset;
+        flex: unset;
+        padding: 0 3% 10px;
+    }
+}

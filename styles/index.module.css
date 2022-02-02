@@ -299,6 +299,26 @@
     align-self: center;
 }
 
+.wavePosition {
+    position: absolute;
+    z-index: -1;
+    top: 70vh;
+}
+
+.imageContainer {
+    position: 'absolute';
+    top: 0;
+    width: 100vw;
+    height: 66.66vw;
+}
+
+.landingImage {
+    object-fit: contain;
+    width: 100% !important;
+    position: relative !important;
+    height: unset !important;
+}
+
 @media (max-width: 1200px) {
     .earnYieldHeader {
         width: unset;
@@ -315,6 +335,7 @@
     }
     .teamSection {
         flex-direction: column;
+        padding: 200px 30px;
     }
     .ourProductsSection {
         flex-direction: column;
@@ -344,5 +365,11 @@
     }
     .text {
         text-align: center;
+    }
+    .yieldButton {
+        opacity: 1;
+    }
+    .missionSection {
+        margin-top: 30vh;
     }
 }

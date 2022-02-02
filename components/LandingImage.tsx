@@ -10,7 +10,7 @@ const LandingImage = () => {
         <div>
             <Image
                 className={styles.landingImage}
-                src="/wave.jpg"
+                src="/wave.png"
                 alt='waves'
                 layout='fill'
             ></Image>
