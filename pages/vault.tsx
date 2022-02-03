@@ -10,24 +10,29 @@ import dynamic from 'next/dynamic';
 const Vault = () => {
     const DynamicBackgroundNoSSR = dynamic(
         () => import('../components/Background'),
-        {ssr: false}
+        { ssr: false }
     )
     return (
-        <div className={styles.vaultPageWrapper}>
-            <div className={styles.vaultSection}>
-                <DynamicBackgroundNoSSR></DynamicBackgroundNoSSR>
-                <div className={styles.vaultDeposits}>
-                    <VaultDepositsInfo></VaultDepositsInfo>
-                </div>
-                <div className={styles.vaultPerformance}>
-                    <VaultPerformanceInfo></VaultPerformanceInfo>
-                </div>
-                <div className={styles.vaultTransactions}>
-                    <StrategyInfo></StrategyInfo>
-                    <VaultTransfer></VaultTransfer>
+        <>
+            <div className={styles.vaultPageWrapper}>
+            <DynamicBackgroundNoSSR></DynamicBackgroundNoSSR>
+
+                <div className={styles.vaultSection}>
+
+                    <div className={styles.vaultDeposits}>
+                        <VaultDepositsInfo></VaultDepositsInfo>
+                    </div>
+                    <div className={styles.vaultPerformance}>
+                        <VaultPerformanceInfo></VaultPerformanceInfo>
+                    </div>
+                    <div className={styles.vaultTransactions}>
+                        <StrategyInfo></StrategyInfo>
+                        <VaultTransfer></VaultTransfer>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
+
     )
 }
 

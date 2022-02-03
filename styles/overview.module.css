@@ -1,5 +1,5 @@
 .main {
-    padding: 0 10% 150px;
+    padding: 0 10% 300px;
     z-index: 1;
     position: relative;
     overflow: hidden;
@@ -72,6 +72,11 @@
     width: 100% !important;
     position: relative !important;
     height: unset !important;
+}
+
+.overviewWrapper {
+    position: relative;
+    overflow: hidden;
 }
 
 .text {

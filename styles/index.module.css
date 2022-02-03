@@ -55,7 +55,6 @@
 }
 
 .teamText {
-    width: 50%;
     padding-bottom: 20px;
     font-family: Rubik;
     font-style: normal;
@@ -273,6 +272,14 @@
 .missionWrapper {
     width: 80%;
     align-self: center;
+}
+
+.teamSectionText {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 @media (max-width: 1200px) {

@@ -13,8 +13,8 @@ const StrategyInfo = () => {
                 <span className={styles.sectionText}>The risk involved with market-making is called inventory risk. Inventory risk is the probability that a market maker can&apos;t find buyers for their inventory, resulting in the risk of holding more of an asset at exactly the wrong time, e.g. accumulating assets when prices are falling or selling too early when prices are rising.</span>
             </div>
             <div style={{display: 'flex', flexDirection: 'column', padding: 32}}>
-                <span className={styles.sectionHeader}>WITHDRAWLS</span>
-                <span className={styles.sectionText}>Once user funds have been used in the vault&apos;s strategy, they cannot be withdrawn until the vault closes it&apos;s position the following day 12am UTC. Users can request their funds to be withdrawn at any time. The request will be processed the following day at 12am UTC.</span>
+                <span className={styles.sectionHeader}>WITHDRAWALS</span>
+                <span className={styles.sectionText}>Once user funds have been used in the vault&apos;s strategy, they cannot be withdrawn until the vault closes its position the following day 12am UTC. Users can request their funds to be withdrawn at any time. The request will be processed the following day at 12am UTC.</span>
             </div>
         </div>
     )
