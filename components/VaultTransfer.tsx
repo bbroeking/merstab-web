@@ -7,6 +7,7 @@ import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapte
 import * as anchor from '@project-serum/anchor';
 import { AccountInfo, AccountLayout as TokenAccountLayout, u64 } from '@solana/spl-token';
 import { BN } from '@project-serum/anchor';
+import { toast } from 'react-toastify';
 
 const VaultTransfer = () => {
     const [amount, setAmount] = useState(0);
@@ -81,17 +82,26 @@ const VaultTransfer = () => {
             await wallet.connect();
             await setupClient();
 
-            if(!wallet || !wallet.publicKey || !merstabClient) return;
+            if (!wallet || !wallet.publicKey || !merstabClient) return;
         };
-        if (depositActive)
+        if (depositActive) {
             await merstabClient.stake(new anchor.BN(amount, undefined, "le"), wallet.publicKey); //gatewayToken?.publicKey, civicEnv.test.gatekeeperNetwork
-        else
+            toast.success('Deposit Successful', {
+                theme: "dark"
+            });
+        }
+        else {
             await merstabClient.unstake(new anchor.BN(amount, undefined, "le"), wallet.publicKey);
+            toast.success('Withdrawal Successful', {
+                theme: "dark"
+            });
+        }
         fetchBalances();
     }
 
     const setMax = () => {
-        setAmount(walletBalance);
+        const max = depositActive ? walletBalance : position;
+        setAmount(max);
     }
 
     return (

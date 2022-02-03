@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { useMediaQuery } from 'react-responsive';
 import StrategyInfo from '../components/StrategyInfo';
 import VaultDepositsInfo from '../components/VaultDepositsInfo';
 import VaultPerformanceInfo from '../components/VaultPerformanceInfo';
 import VaultTransfer from '../components/VaultTransfer';
 import styles from '../styles/Vault.module.css';
 import dynamic from 'next/dynamic';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Vault = () => {
     const DynamicBackgroundNoSSR = dynamic(
@@ -31,6 +32,7 @@ const Vault = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer></ToastContainer>
         </>
 
     )
