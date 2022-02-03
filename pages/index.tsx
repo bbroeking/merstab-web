@@ -30,7 +30,7 @@ const Home: NextPage = () => {
                         <div className={styles.missionFlexColumn}>
                             <div className={styles.sectionHeader}>Stabilizing the DeFi Derivatives Market Through Optimizing Market Inefficiencies</div>
                             <div className={styles.text} style={{ width: 'unset', paddingBottom: 10 }}>We believe DeFi will become the underlying core infrastructure of the global financial market. Our mission is to help the industry achieve a higher level of adoption by optimizing market inefficiencies. </div>
-                            <Button className={styles.learnMore}>LEARN MORE</Button>
+                            <a href="https://devpost.com/software/merstab" target="_blank" rel='noreferrer'><Button className={styles.learnMore}>LEARN MORE</Button></a>
                         </div>
                     </Row>
                     <h2 className={styles.missionBottomLine}></h2>
