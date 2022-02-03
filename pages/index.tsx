@@ -8,7 +8,7 @@ import dynamic from 'next/dynamic';
 const Home: NextPage = () => {
     const DynamicBackgroundNoSSR = dynamic(
         () => import('../components/HomePageBackground'),
-        {ssr: false}
+        { ssr: false }
     )
     return (
         <div>
@@ -75,8 +75,9 @@ const Home: NextPage = () => {
                         <h1 className={styles.teamHeader}>THE TEAM</h1>
                         <div className={styles.teamText}>At Merstab, we are building a decentralized infrastructure that optimizes market inefficiencies in Decentralized Finance.</div>
                         <div className={styles.teamText}>Our team of quants, DevOps specialists, on-chain developers, and market analysts came together and built an infrastructure to provide better returns to investors and help the industry achieve wider market adoption.</div>
-                        <Button className={styles.yieldButton}>CONTACT US</Button>
-
+                        <a href="mailto:contactus@merstab.com">
+                            <Button className={styles.contactUsButton}>CONTACT US</Button>
+                        </a>
                     </div>
                     <div>
                         <Image src="/svg/logo.svg" alt='merstab logo' width={400} height={400}></Image>

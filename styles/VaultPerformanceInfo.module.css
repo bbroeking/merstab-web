@@ -7,7 +7,6 @@
     border-radius: 4px;
     background: #1A1A1A;
     padding: 40px;
-    margin-right: 5px;
     flex: 1;
 }
 
@@ -42,7 +41,6 @@
 
 @media (max-width: 1450px) {
     .vaultPerformanceInfo {
-        padding: 0 10%;
         flex-direction: column;
     }
 }

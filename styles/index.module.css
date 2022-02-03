@@ -24,6 +24,26 @@
     align-self: center;
 }
 
+.contactUsButton {
+    width: 80px;
+    background-color: #DC5355;
+    border: 0;
+    border-radius: 4px;
+    opacity: 0.8;
+    padding: 10px;
+    width: 156px;
+    height: 48px;
+    cursor: pointer;
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    letter-spacing: 1.25px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+}
+
 .yieldButton:hover {
     opacity: 1;
 }
@@ -278,8 +298,7 @@
     width: 50%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
 }
 
 @media (max-width: 1200px) {

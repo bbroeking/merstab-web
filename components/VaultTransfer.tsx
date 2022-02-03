@@ -89,6 +89,11 @@ const VaultTransfer = () => {
             await merstabClient.unstake(new anchor.BN(amount, undefined, "le"), wallet.publicKey);
         fetchBalances();
     }
+
+    const setMax = () => {
+        setAmount(walletBalance);
+    }
+
     return (
         <div className={styles.transferSection}>
             <div className={styles.innerTransfer}>
@@ -106,7 +111,7 @@ const VaultTransfer = () => {
                 </Row>
                 <Row>
                     <div className={styles.valueInputRow}>
-                        <Button className={styles.maxButton}>MAX</Button>
+                        <Button onClick={setMax} className={styles.maxButton}>MAX</Button>
                         <input type='number' className={styles.amountField} value={amount} onChange={onInputChange}></input>
                         <Image className={styles.currencyIcon} src='/svg/usdc.svg' width={30} height={30}></Image>
                         <div className={styles.spacer}></div>
