@@ -113,7 +113,7 @@ export async function getOrInitTokenAccounts(
             const txId = await merstabClient.program.provider.send(tx)
             console.log(`txhash- create account: ${txId}`);
 
-        } catch(err) {
+        } catch (err) {
             console.log(err)
         }
     }
@@ -142,7 +142,7 @@ export async function getOrInitTokenAccounts(
             const txId = await merstabClient.program.provider.send(tx)
             console.log(`txhash- create account: ${txId}`);
 
-        } catch(err) {
+        } catch (err) {
             console.log(err)
         }
     }
@@ -175,7 +175,7 @@ export class MerstabClient {
         return new anchor.BN(parsedStakedTokenAccountData.amount, undefined, "le").toNumber();
     }
 
-    async getTokenAccount (walletPubKey: PublicKey) {
+    async getTokenAccount(walletPubKey: PublicKey) {
         return await Token.getAssociatedTokenAddress(
             ASSOCIATED_TOKEN_PROGRAM_ID,
             TOKEN_PROGRAM_ID,
@@ -199,64 +199,66 @@ export class MerstabClient {
         // gatewayToken: PublicKey,
         // gatekeeperNetwork: PublicKey,
     ) {
-        const { ata, stakedATA } = await getOrInitTokenAccounts(this, this.vaultMetadata, wallet);
-        const ix = await this.program.instruction.stake(amount, {
-            accounts: {
-                vault: this.vaultMetadata.vault,
-                tokenVault: this.vaultMetadata.tokenVaultPDA,
-                stakersTokenAccount: ata,
-                stakersAta: stakedATA,
-                stakedTokenMintAuthority: this.vaultMetadata.stakedTokenMintAuthority,
-                staker: wallet,
-                stakedTokenMint: this.vaultMetadata.stakedTokenMint,
-                tokenProgram: TOKEN_PROGRAM_ID,
-
-                // userWallet: wallet,
-                // gatewayToken,
-                // gatekeeperNetwork
-            },
-        });
-
-        const tx = new Transaction().add(ix);
         try {
+
+            const { ata, stakedATA } = await getOrInitTokenAccounts(this, this.vaultMetadata, wallet);
+            const ix = await this.program.instruction.stake(amount, {
+                accounts: {
+                    vault: this.vaultMetadata.vault,
+                    tokenVault: this.vaultMetadata.tokenVaultPDA,
+                    stakersTokenAccount: ata,
+                    stakersAta: stakedATA,
+                    stakedTokenMintAuthority: this.vaultMetadata.stakedTokenMintAuthority,
+                    staker: wallet,
+                    stakedTokenMint: this.vaultMetadata.stakedTokenMint,
+                    tokenProgram: TOKEN_PROGRAM_ID,
+
+                    // userWallet: wallet,
+                    // gatewayToken,
+                    // gatekeeperNetwork
+                },
+            });
+
+            const tx = new Transaction().add(ix);
             const txId = await this.program.provider.send(tx)
             console.log(`txhash- create account: ${txId}`);
 
-        } catch(err) {
+        } catch (err) {
             console.log(err)
         }
     }
 
     async unstake(amount: anchor.BN, wallet: PublicKey) {
-        const [token_vault_auth_pda, token_vault_auth_bump] = await PublicKey.findProgramAddress(
-            [
-                Buffer.from(anchor.utils.bytes.utf8.encode("token_vault_authority")), 
-                Buffer.from(anchor.utils.bytes.utf8.encode('RdtHKxfH4r'))
-            ],
-            this.program.programId
-        );
-        console.log(token_vault_auth_pda);
-
-        const { ata, stakedATA } = await getOrInitTokenAccounts(this, this.vaultMetadata, wallet);
-        const unstakeIx = await this.program.instruction.unstake(amount, {
-            accounts: {
-                vault: this.vaultMetadata.vault,
-                tokenVault: this.vaultMetadata.tokenVaultPDA,
-                tokenVaultAuthority: token_vault_auth_pda,
-                stakersTokenAccount: ata,
-                stakersAta: stakedATA,
-                stakedTokenMintAuthority: this.vaultMetadata.stakedTokenMintAuthority,
-                staker: wallet,
-                stakedTokenMint: this.vaultMetadata.stakedTokenMint,
-                tokenProgram: TOKEN_PROGRAM_ID,
-            },
-        })
-        const tx = new Transaction().add(unstakeIx);
         try {
+            const [token_vault_auth_pda, token_vault_auth_bump] = await PublicKey.findProgramAddress(
+                [
+                    Buffer.from(anchor.utils.bytes.utf8.encode("token_vault_authority")),
+                    Buffer.from(anchor.utils.bytes.utf8.encode('RdtHKxfH4r'))
+                ],
+                this.program.programId
+            );
+            console.log(token_vault_auth_pda);
+
+            const { ata, stakedATA } = await getOrInitTokenAccounts(this, this.vaultMetadata, wallet);
+            const unstakeIx = await this.program.instruction.unstake(amount, {
+                accounts: {
+                    vault: this.vaultMetadata.vault,
+                    tokenVault: this.vaultMetadata.tokenVaultPDA,
+                    tokenVaultAuthority: token_vault_auth_pda,
+                    stakersTokenAccount: ata,
+                    stakersAta: stakedATA,
+                    stakedTokenMintAuthority: this.vaultMetadata.stakedTokenMintAuthority,
+                    staker: wallet,
+                    stakedTokenMint: this.vaultMetadata.stakedTokenMint,
+                    tokenProgram: TOKEN_PROGRAM_ID,
+                },
+            })
+            const tx = new Transaction().add(unstakeIx);
             const txId = await this.program.provider.send(tx)
             console.log(`txhash- create account: ${txId}`);
 
-        } catch(err) {
+        } catch (err) {
             console.log(err)
-        }    }
+        }
+    }
 }

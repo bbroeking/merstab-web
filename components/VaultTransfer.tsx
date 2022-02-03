@@ -20,17 +20,17 @@ const VaultTransfer = () => {
     const wallet = useWallet();
 
     const setupClient = async () => {
-        const provider = new anchor.Provider(connection.connection, anchorWallet as Wallet, anchor.Provider.defaultOptions());
+        const provider = new anchor.Provider(connection.connection, wallet as Wallet, anchor.Provider.defaultOptions());
         const client = await MerstabClient.connect(provider, true);
         setMerstabClient(client);
     }
 
     useEffect(() => {
-        if (!anchorWallet) {
+        if (!wallet) {
             console.log("anchor wallet undefined")
         }
         setupClient();
-    }, []);
+    }, [wallet]);
 
     const fetchBalances = async () => {
         if (!merstabClient || !wallet || !wallet.publicKey) return;
