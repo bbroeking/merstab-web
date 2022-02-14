@@ -17,9 +17,7 @@ const Vault = () => {
         <>
             <div className={styles.vaultPageWrapper}>
             <DynamicBackgroundNoSSR></DynamicBackgroundNoSSR>
-
                 <div className={styles.vaultSection}>
-
                     <div className={styles.vaultDeposits}>
                         <VaultDepositsInfo></VaultDepositsInfo>
                     </div>

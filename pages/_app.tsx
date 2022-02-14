@@ -14,8 +14,7 @@ import { clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { AppProps } from 'next/app';
 import { FC, useMemo } from 'react';
 import AppLayout from '../components/AppLayout';
-import { GatewayProvider, GatewayStatus, useGateway } from "@civic/solana-gateway-react";
-import { SolanaWalletAdapter } from '@civic/solana-gateway-react/dist/esm/solana';
+import { EthereumProviderProvider } from '../contexts/EthereumProviderContext';
 
 // Use require instead of import since order matters
 require('@solana/wallet-adapter-react-ui/styles.css');
@@ -73,19 +72,21 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
     );
 
     return (
-        <ConnectionProvider endpoint={endpoint}>
-            <WalletProvider wallets={wallets} autoConnect>
-                <WalletModalProvider>
-                    {/* <Gateway> */}
+        <EthereumProviderProvider>
+            <ConnectionProvider endpoint={endpoint}>
+                <WalletProvider wallets={wallets} autoConnect>
+                    <WalletModalProvider>
+                        {/* <Gateway> */}
                         <AppLayout>
                             <Component>
                                 {pageProps}
                             </Component>
                         </AppLayout>
-                    {/* </Gateway> */}
-                </WalletModalProvider>
-            </WalletProvider>
-        </ConnectionProvider>
+                        {/* </Gateway> */}
+                    </WalletModalProvider>
+                </WalletProvider>
+            </ConnectionProvider>
+        </EthereumProviderProvider>
     );
 };
 

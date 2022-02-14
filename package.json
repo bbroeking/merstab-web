@@ -26,6 +26,7 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@certusone/wormhole-sdk": "^0.2.0",
         "@civic/solana-gateway-react": "^0.4.10",
         "@emotion/styled": "^11.6.0",
         "@metamask/detect-provider": "^1.2.0",
