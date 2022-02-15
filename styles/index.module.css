@@ -156,6 +156,22 @@
     padding: 15vh 0px;
 }
 
+.startEarningRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.ourProductsRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
 .flexColumn {
     display: flex;
     flex-direction: column;
@@ -186,6 +202,15 @@
     align-items: center;
     justify-content: center;
     padding: 0 20px;
+}
+
+.missionText {
+    width: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    text-align: center;
 }
 
 .line {
@@ -263,6 +288,8 @@
 
 .teamSection {
     display: flex;
+    height: 100vh;
+    width: 100vw;
     padding: 280px 150px;
     background: #1E1F1F;
     justify-content: space-around;
@@ -282,12 +309,12 @@
     width: 100%;
     height: 100vh;
     background: linear-gradient(117.15deg, rgba(50, 1, 53, 0.37) 2.23%, rgba(101, 9, 58, 0.37) 64.33%, rgba(186, 53, 72, 0.37) 125.15%);
-    margin-top: 50vh;
     z-index: 3;
 }
 
 .text .btcPerpDescription {
     align-self: flex-start;
+    width: 70%;
 }
 
 .missionWrapper {
@@ -300,6 +327,23 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
+
+.startEarningSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 200px;
+    justify-content: flex-start;
+}
+
+.blackOverlay {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    top: 100vh;
+    z-index: -1;
+    background: #1E1F1F;
 }
 
 @media (max-width: 1200px) {
@@ -315,6 +359,7 @@
     .text .btcPerpDescription {
         align-self: center;
         padding-bottom: 40px;
+        width: unset;
     }
     .teamSection {
         flex-direction: column;
@@ -352,7 +397,7 @@
     .yieldButton {
         opacity: 1;
     }
-    .missionSection {
-        margin-top: 30vh;
+    .missionText {
+        text-align: unset;
     }
 }
