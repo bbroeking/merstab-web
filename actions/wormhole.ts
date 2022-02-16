@@ -8,6 +8,7 @@ import {
     getEmitterAddressEth,
     getEmitterAddressSolana,
     getSignedVAA,
+    getSignedVAAWithRetry,
     parseSequenceFromLogEth,
     parseSequenceFromLogSolana,
     postVaaSolana
@@ -73,11 +74,13 @@ export const attestFromEthereumToSolana = async (
     const sequence = parseSequenceFromLogEth(receipt, ETH_BRIDGE_ADDRESS);
     const emitterAddress = getEmitterAddressEth(ETH_TOKEN_BRIDGE_ADDRESS);
     // Fetch the signedVAA from the Wormhole Network (this may require retries while you wait for confirmation)
-    const signedVAA  = await getSignedVAA(
-        WORMHOLE_RPC_HOST,
+    // this confirmation can take awhile, we should prompt the user again before we create a solana transaction
+    // so the blockhash doesnt expire
+    const signedVAA  = await getSignedVAAWithRetry(
+        [WORMHOLE_RPC_HOST],
         CHAIN_ID_ETH,
         emitterAddress,
-        sequence
+        sequence,
     );
 
     if(!solana.signTransaction || !solana.publicKey) return;
@@ -100,6 +103,7 @@ export const attestFromEthereumToSolana = async (
     );
     const signed = await solana.signTransaction(transaction);
     const txid = await connection.sendRawTransaction(signed.serialize());
+    console.log(txid);
     await connection.confirmTransaction(txid);
 }
 

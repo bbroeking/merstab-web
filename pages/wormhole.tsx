@@ -5,7 +5,7 @@ import { PublicKey, Transaction } from '@solana/web3.js';
 import { Button } from 'antd';
 import { parseUnits } from 'ethers/lib/utils';
 import React, { useEffect } from 'react'
-import { ETH_TOKEN_BRIDGE_ADDRESS } from '../actions/constants';
+import { ETH_TOKEN_BRIDGE_ADDRESS, SOL_TOKEN_BRIDGE_ADDRESS } from '../actions/constants';
 import { transferFromEthToSolana, transferFromSolanaToEth } from '../actions/transfer';
 import { attestFromEthereumToSolana } from '../actions/wormhole';
 import { useEthereumProvider } from '../contexts/EthereumProviderContext'
@@ -24,27 +24,31 @@ const WormHole = () => {
         if (!eth.signer || !wallet.publicKey || !wallet.signTransaction) return;
 
         // attest
-        await attestFromEthereumToSolana(
-            connection.connection,
-            eth.signer,
-            tokenAddress,
-            wallet
-        );
+        // await attestFromEthereumToSolana(
+        //     connection.connection,
+        //     eth.signer,
+        //     tokenAddress,
+        //     wallet
+        // );
 
         const solanaMintKey = new PublicKey(
             (await getForeignAssetSolana(
                 connection.connection,
-                ETH_TOKEN_BRIDGE_ADDRESS,
+                SOL_TOKEN_BRIDGE_ADDRESS,
                 CHAIN_ID_ETH,
                 hexToUint8Array(nativeToHexString(tokenAddress, CHAIN_ID_ETH) || "")
             )) || ""
         );
+        console.log(`Solana Mint Key: ${solanaMintKey}`);
+
         const recipient = await Token.getAssociatedTokenAddress(
             ASSOCIATED_TOKEN_PROGRAM_ID,
             TOKEN_PROGRAM_ID,
             solanaMintKey,
             wallet.publicKey
         );
+
+        console.log(`Recipient: ${recipient}`)
         // create the associated token account if it doesn't exist
         const associatedAddressInfo = await connection.connection.getAccountInfo(
             recipient
@@ -71,7 +75,7 @@ const WormHole = () => {
             await connection.connection.confirmTransaction(txid);
         }
         // create a signer for Eth
-        const amount = parseUnits("0.1", 18);
+        const amount = parseUnits("1", 18);
         // approve the bridge to spend tokens
         await approveEth(
             ETH_TOKEN_BRIDGE_ADDRESS,
@@ -80,11 +84,11 @@ const WormHole = () => {
             amount
         );
         // transfer
-        transferFromEthToSolana(
+        await transferFromEthToSolana(
             eth.signer,
             tokenAddress,
-            1,
-            Buffer.from('recipient address'),
+            amount,
+            Buffer.from(wallet.publicKey.toString()),
             connection.connection,
             wallet,
             wallet.publicKey.toString()
