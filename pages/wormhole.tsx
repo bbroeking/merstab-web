@@ -1,13 +1,14 @@
 import { approveEth, CHAIN_ID_ETH, getForeignAssetSolana, hexToUint8Array, nativeToHexString } from '@certusone/wormhole-sdk';
+import { getOrca } from '@orca-so/sdk';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey, Transaction } from '@solana/web3.js';
+import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import { Button } from 'antd';
 import { parseUnits } from 'ethers/lib/utils';
 import React, { useEffect } from 'react'
 import { ETH_TOKEN_BRIDGE_ADDRESS, SOL_TOKEN_BRIDGE_ADDRESS } from '../actions/constants';
+import { swap } from '../actions/orca';
 import { transferFromEthToSolana, transferFromSolanaToEth } from '../actions/transfer';
-import { attestFromEthereumToSolana } from '../actions/wormhole';
 import { useEthereumProvider } from '../contexts/EthereumProviderContext'
 
 const WormHole = () => {
@@ -18,6 +19,13 @@ const WormHole = () => {
     useEffect(() => {
         eth.connect();
     }, []);
+
+    const onSwapSol = async () => {
+        if (!wallet.publicKey) return;
+        const connection = new Connection("https://api.mainnet-beta.solana.com", "singleGossip");
+        const orca = getOrca(connection);
+        swap(orca, wallet.publicKey, 1);
+    }
 
     const onEthSol = async () => {
         const tokenAddress = '0xBA62BCfcAaFc6622853cca2BE6Ac7d845BC0f2Dc';
@@ -112,6 +120,7 @@ const WormHole = () => {
         <div>
             <Button onClick={onSolEth}>Solana -{'>'} ETH</Button>
             <Button onClick={onEthSol}>ETH -{'>'} Solana</Button>
+            <Button onClick={onSwapSol}>Swap SOL</Button>
         </div>
     )
 }
