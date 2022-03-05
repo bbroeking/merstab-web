@@ -1,6 +1,26 @@
-import { ChainId, CHAIN_ID_ETH, CHAIN_ID_SOLANA, getEmitterAddressEth, getEmitterAddressSolana, getSignedVAA, parseSequenceFromLogEth, parseSequenceFromLogSolana, postVaaSolana, redeemOnEth, redeemOnSolana, transferFromEth, transferFromSolana } from "@certusone/wormhole-sdk";
+import { 
+    ChainId, 
+    CHAIN_ID_ETH, 
+    CHAIN_ID_SOLANA, 
+    getEmitterAddressEth, 
+    getEmitterAddressSolana, 
+    getIsTransferCompletedSolana, 
+    getSignedVAA, 
+    getSignedVAAWithRetry, 
+    hexToUint8Array, 
+    nativeToHexString, 
+    parseSequenceFromLogEth, 
+    parseSequenceFromLogSolana, 
+    postVaaSolana, 
+    redeemAndUnwrapOnSolana, 
+    redeemOnEth, 
+    redeemOnSolana, 
+    transferFromEth, 
+    transferFromEthNative, 
+    transferFromSolana 
+} from "@certusone/wormhole-sdk";
 import { WalletContextState } from "@solana/wallet-adapter-react";
-import { Connection } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import { ethers } from "ethers";
 import { Signer } from "../contexts/EthereumProviderContext";
 import { ETH_BRIDGE_ADDRESS, ETH_TOKEN_BRIDGE_ADDRESS, SOL_BRIDGE_ADDRESS, SOL_TOKEN_BRIDGE_ADDRESS, WORMHOLE_RPC_HOST } from "./constants";
@@ -60,7 +80,7 @@ export const transferFromEthToSolana = async (
     tokenAddress: string, 
     amount: ethers.BigNumberish, 
     // recipientChain: ChainId, 
-    recipientAddress: Uint8Array,
+    recipientAddress: PublicKey,
     connection: Connection,
     wallet: WalletContextState,
     payerAddress: string,
@@ -69,24 +89,34 @@ export const transferFromEthToSolana = async (
 ) => {
     if (!signer) return;
     // Submit transaction - results in a Wormhole message being published
+    const hexString = nativeToHexString(recipientAddress.toString(), CHAIN_ID_SOLANA);
+    if(!hexString) {
+        throw new Error("Invalid recipient");
+    }
     const receipt = await transferFromEth(
         ETH_TOKEN_BRIDGE_ADDRESS,
         signer,
         tokenAddress,
         amount,
         CHAIN_ID_SOLANA,
-        recipientAddress
+        hexToUint8Array(hexString)
     );
+    console.log(`recepit: ${JSON.stringify(receipt)}`);
     // Get the sequence number and emitter address required to fetch the signedVAA of our message
     const sequence = parseSequenceFromLogEth(receipt, ETH_BRIDGE_ADDRESS);
+    console.log(`sequence ${sequence}`)
     const emitterAddress = getEmitterAddressEth(ETH_TOKEN_BRIDGE_ADDRESS);
+    console.log(`sequence ${emitterAddress}`)
+
     // Fetch the signedVAA from the Wormhole Network (this may require retries while you wait for confirmation)
-    const signedVaaResponse = await getSignedVAA(
-        WORMHOLE_RPC_HOST,
+    const { vaaBytes: signedVaa } = await getSignedVAAWithRetry(
+        [WORMHOLE_RPC_HOST],
         CHAIN_ID_ETH,
         emitterAddress,
         sequence
     );
+    console.log(`sequence ${signedVaa}`)
+
     if (!wallet.signTransaction) return;
     // On Solana, we have to post the signedVAA ourselves
     await postVaaSolana(
@@ -94,19 +124,24 @@ export const transferFromEthToSolana = async (
         wallet.signTransaction,
         SOL_BRIDGE_ADDRESS,
         payerAddress,
-        Buffer.from(signedVaaResponse.vaaBytes)
+        Buffer.from(signedVaa)
     );
+
+    await getIsTransferCompletedSolana(
+        SOL_TOKEN_BRIDGE_ADDRESS,
+        signedVaa,
+        connection
+    )
     // Finally, redeem on Solana
     const transaction = await redeemOnSolana(
         connection,
         SOL_BRIDGE_ADDRESS,
         SOL_TOKEN_BRIDGE_ADDRESS,
         payerAddress,
-        Buffer.from(signedVaaResponse.vaaBytes),
-        // isSolanaNative,
-        // mintAddress
+        signedVaa,
     );
     const signed = await wallet.signTransaction(transaction);
-    const txid = await connection.sendRawTransaction(signed.serialize());
+    const txid = await connection.sendRawTransaction(signed.serialize(), { skipPreflight: true});
+    console.log(`transaction id: ${txid}`);
     await connection.confirmTransaction(txid);
 }

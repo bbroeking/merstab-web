@@ -70,13 +70,16 @@ export const attestFromEthereumToSolana = async (
         signer,
         tokenAddress
     );
+    console.log(`receipt: ${receipt}`);
     // Get the sequence number and emitter address required to fetch the signedVAA of our message
     const sequence = parseSequenceFromLogEth(receipt, ETH_BRIDGE_ADDRESS);
+    console.log(`sequence: ${sequence}`);
     const emitterAddress = getEmitterAddressEth(ETH_TOKEN_BRIDGE_ADDRESS);
+    console.log(`emitterAddress: ${emitterAddress}`);
     // Fetch the signedVAA from the Wormhole Network (this may require retries while you wait for confirmation)
     // this confirmation can take awhile, we should prompt the user again before we create a solana transaction
     // so the blockhash doesnt expire
-    const signedVAA  = await getSignedVAAWithRetry(
+    const { vaaBytes: signedVAA }  = await getSignedVAAWithRetry(
         [WORMHOLE_RPC_HOST],
         CHAIN_ID_ETH,
         emitterAddress,
@@ -91,7 +94,7 @@ export const attestFromEthereumToSolana = async (
         solana.signTransaction,
         SOL_BRIDGE_ADDRESS,
         solana.publicKey?.toString(), // payer address
-        Buffer.from(signedVAA.vaaBytes)
+        Buffer.from(signedVAA)
     );
     // Finally, create the wrapped token
     const transaction = await createWrappedOnSolana(
@@ -99,7 +102,7 @@ export const attestFromEthereumToSolana = async (
         SOL_BRIDGE_ADDRESS,
         SOL_TOKEN_BRIDGE_ADDRESS,
         solana.publicKey?.toString(),
-        signedVAA.vaaBytes
+        signedVAA
     );
     const signed = await solana.signTransaction(transaction);
     const txid = await connection.sendRawTransaction(signed.serialize());

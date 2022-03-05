@@ -1,4 +1,4 @@
-import { approveEth, CHAIN_ID_ETH, getForeignAssetSolana, hexToUint8Array, nativeToHexString } from '@certusone/wormhole-sdk';
+import { approveEth, CHAIN_ID_ETH, CHAIN_ID_SOLANA, getEmitterAddressEth, getForeignAssetSolana, getIsTransferCompletedSolana, getSignedVAAWithRetry, hexToUint8Array, nativeToHexString, parseSequenceFromLogEth, postVaaSolana, redeemOnSolana, transferFromEth } from '@certusone/wormhole-sdk';
 import { getOrca } from '@orca-so/sdk';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
@@ -6,12 +6,16 @@ import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import { Button } from 'antd';
 import { parseUnits } from 'ethers/lib/utils';
 import React, { useEffect } from 'react'
-import { ETH_TOKEN_BRIDGE_ADDRESS, SOL_TOKEN_BRIDGE_ADDRESS } from '../actions/constants';
+import { ETH_BRIDGE_ADDRESS, ETH_TOKEN_BRIDGE_ADDRESS, SOL_BRIDGE_ADDRESS, SOL_TOKEN_BRIDGE_ADDRESS, WORMHOLE_RPC_HOST } from '../actions/constants';
 import { swap } from '../actions/orca';
 import { transferFromEthToSolana, transferFromSolanaToEth } from '../actions/transfer';
+import { attestFromEthereumToSolana } from '../actions/attest';
 import { useEthereumProvider } from '../contexts/EthereumProviderContext'
+import { basicTransfer } from '../actions/src/commonWorkflows';
+import { evm, solana } from '../actions/tester';
+import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 
-const WormHole = () => {
+const Wormhole = () => {
     const eth = useEthereumProvider();
     const wallet = useWallet();
     const connection = useConnection();
@@ -82,25 +86,64 @@ const WormHole = () => {
             );
             await connection.connection.confirmTransaction(txid);
         }
-        // create a signer for Eth
+
+        // approve 
         const amount = parseUnits("1", 18);
-        // approve the bridge to spend tokens
-        await approveEth(
+        await approveEth(ETH_TOKEN_BRIDGE_ADDRESS, tokenAddress, eth.signer, amount);
+
+        // create a signer for Eth
+        const receipt = await transferFromEth(
             ETH_TOKEN_BRIDGE_ADDRESS,
-            tokenAddress,
-            eth.signer,
-            amount
-        );
-        // transfer
-        await transferFromEthToSolana(
             eth.signer,
             tokenAddress,
             amount,
-            Buffer.from(wallet.publicKey.toString()),
-            connection.connection,
-            wallet,
-            wallet.publicKey.toString()
+            CHAIN_ID_SOLANA,
+            hexToUint8Array(
+                nativeToHexString(recipient.toString(), CHAIN_ID_SOLANA) || ""
+            )
         );
+        // get the sequence from the logs (needed to fetch the vaa)
+        const sequence = await parseSequenceFromLogEth(
+            receipt,
+            ETH_BRIDGE_ADDRESS
+        );
+        console.log(sequence);
+
+        const emitterAddress = getEmitterAddressEth(ETH_TOKEN_BRIDGE_ADDRESS);
+
+        const { vaaBytes: signedVAA } = await getSignedVAAWithRetry(
+            [WORMHOLE_RPC_HOST],
+            CHAIN_ID_ETH,
+            emitterAddress,
+            sequence
+        );
+
+        await postVaaSolana(
+            connection.connection,
+            wallet.signTransaction,
+            SOL_BRIDGE_ADDRESS,
+            wallet.publicKey.toString(),
+            Buffer.from(signedVAA)
+        );
+
+        await getIsTransferCompletedSolana(
+            SOL_TOKEN_BRIDGE_ADDRESS,
+            signedVAA,
+            connection.connection
+        );
+
+        const transaction = await redeemOnSolana(
+            connection.connection,
+            SOL_BRIDGE_ADDRESS,
+            SOL_TOKEN_BRIDGE_ADDRESS,
+            wallet.publicKey.toString(),
+            signedVAA
+        );
+
+        const signed = await wallet.signTransaction(transaction);
+        const txid = await connection.connection.sendRawTransaction(signed.serialize(), { skipPreflight: true});
+        console.log(`transaction id: ${txid}`);
+        await connection.connection.confirmTransaction(txid);
     }
 
     const onSolEth = async () => {
@@ -125,4 +168,4 @@ const WormHole = () => {
     )
 }
 
-export default WormHole;
+export default Wormhole;
