@@ -14,12 +14,13 @@ const Home: NextPage = () => {
         <div>
             <Col className={styles.homeColumn}>
                 <DynamicBackgroundNoSSR></DynamicBackgroundNoSSR>
-                <Row className={styles.flexRow} style={{ paddingBottom: 200 }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Row className={styles.startEarningRow}>
+                    <div className={styles.startEarningSection}>
                         <div className={styles.earnYieldHeader}>Earn Yield On Your Crypto Assets With Fully-automated DeFi Trading Strategies</div>
                         <Link href='/overview'><Button className={styles.yieldButton}>START EARNING</Button></Link>
                     </div>
                 </Row>
+                <div className={styles.blackOverlay}></div>
                 <div className={styles.missionSection}>
                     <div className={styles.missionWrapper}>
                         <h2 className={styles.ourMissionLine}>
@@ -29,13 +30,13 @@ const Home: NextPage = () => {
                     <Row className={styles.flexRow}>
                         <div className={styles.missionFlexColumn}>
                             <div className={styles.sectionHeader}>Stabilizing the DeFi Derivatives Market Through Optimizing Market Inefficiencies</div>
-                            <div className={styles.text} style={{ width: 'unset', paddingBottom: 10 }}>We believe DeFi will become the underlying core infrastructure of the global financial market. Our mission is to help the industry achieve a higher level of adoption by optimizing market inefficiencies. </div>
+                            <div className={styles.missionText} style={{ width: 'unset', paddingBottom: 10 }}>We believe DeFi will become the underlying core infrastructure of the global financial market. Our mission is to help the industry achieve a higher level of adoption by optimizing market inefficiencies. </div>
                             <a href="https://devpost.com/software/merstab" target="_blank" rel='noreferrer'><Button className={styles.learnMore}>LEARN MORE</Button></a>
                         </div>
                     </Row>
                     <h2 className={styles.missionBottomLine}></h2>
                 </div>
-                <Row className={styles.flexRow}>
+                <Row className={styles.ourProductsRow}>
                     <div className={styles.flexColumnProducts}>
                         <h3 style={{ paddingBottom: 60 }}>OUR PRODUCTS</h3>
                         <div className={styles.ourProductsSection}>
@@ -80,7 +81,7 @@ const Home: NextPage = () => {
                         </a>
                     </div>
                     <div>
-                        <Image src="/svg/logo.svg" alt='merstab logo' width={400} height={400}></Image>
+                        <Image src="/teamlogo.png" alt='merstab logo' width={600} height={400}></Image>
                     </div>
                 </Row>
             </Col>
