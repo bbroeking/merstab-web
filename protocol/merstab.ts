@@ -213,7 +213,7 @@ export class MerstabClient {
                     stakedTokenMint: this.vaultMetadata.stakedTokenMint,
                     tokenProgram: TOKEN_PROGRAM_ID,
 
-                    // userWallet: wallet,
+                    // userWallet: wallet, civic
                     // gatewayToken,
                     // gatekeeperNetwork
                 },

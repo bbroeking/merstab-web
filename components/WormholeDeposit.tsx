@@ -1,59 +1,74 @@
-import { 
-    approveEth, 
-    CHAIN_ID_ETH, 
-    CHAIN_ID_SOLANA, 
+import { Button, Spin } from 'antd';
+import React, { useEffect, useState } from 'react'
+import {
+    approveEth,
+    CHAIN_ID_ETH,
+    CHAIN_ID_SOLANA,
     getEmitterAddressEth,
-    getForeignAssetSolana, 
-    getIsTransferCompletedSolana, 
-    getSignedVAAWithRetry, 
-    hexToUint8Array, 
-    nativeToHexString, 
-    parseSequenceFromLogEth, 
-    postVaaSolana, 
-    redeemOnSolana, 
-    transferFromEth 
+    getForeignAssetSolana,
+    getIsTransferCompletedSolana,
+    getSignedVAAWithRetry,
+    hexToUint8Array,
+    nativeToHexString,
+    parseSequenceFromLogEth,
+    postVaaSolana,
+    redeemOnSolana,
+    transferFromEth
 } from '@certusone/wormhole-sdk';
-import { 
-    getOrca,
-    Network 
-} from '@orca-so/sdk';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { Button } from 'antd';
+import { PublicKey, Transaction } from '@solana/web3.js';
 import { parseUnits } from 'ethers/lib/utils';
-import React, { useEffect } from 'react'
-import { 
-    ETH_BRIDGE_ADDRESS, 
-    ETH_TOKEN_BRIDGE_ADDRESS, 
-    SOL_BRIDGE_ADDRESS, 
+import {
+    ETH_BRIDGE_ADDRESS,
+    ETH_TOKEN_BRIDGE_ADDRESS,
+    SOL_BRIDGE_ADDRESS,
     SOL_TOKEN_BRIDGE_ADDRESS,
-     WORMHOLE_RPC_HOST 
+    WORMHOLE_RPC_HOST
 } from '../actions/constants';
 import { swap } from '../actions/orca';
 import { attestFromEthereumToSolana } from '../actions/attest';
 import { useEthereumProvider } from '../contexts/EthereumProviderContext'
 import { useOrca } from '../hooks/useOrca';
+import styles from '../styles/WormholeDeposit.module.css';
+import { toast, ToastOptions } from 'react-toastify';
+import { Orca } from '@orca-so/sdk';
 
-const Wormhole = () => {
+const toastOpts = {
+    autoClose: 20000,
+    position: 'bottom-left',
+    theme: "dark"
+} as ToastOptions;
+
+interface WormholeDepositProps {
+    depositAmount: number
+}
+const WormholeDeposit = (props: WormholeDepositProps) => {
+
+    const { depositAmount } = props;
     const eth = useEthereumProvider();
     const wallet = useWallet();
     const { connection } = useConnection();
-    const orca = useOrca();
+    const orca: Orca = useOrca();
+    const [signedVaa, setSignedVaa] = useState<Uint8Array>();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
         eth.connect();
     }, []);
 
-    const onSwapSol = async () => {
+    const onOrcaSwap = async () => {
         if (!wallet.publicKey) return;
-
         const txId = await swap(orca, wallet.publicKey, 0.01, wallet, connection);
     }
 
-    const onEthSol = async () => {
-        const tokenAddress = '0xBA62BCfcAaFc6622853cca2BE6Ac7d845BC0f2Dc';
-        if (!eth.signer || !wallet.publicKey || !wallet.signTransaction) return;
+    const onWormholeDeposit = async () => {
+        const tokenAddress = '0xBA62BCfcAaFc6622853cca2BE6Ac7d845BC0f2Dc'; // this should be ETH on mainnet
+        if (!eth.signer ||
+            !wallet.publicKey ||
+            !wallet.signTransaction ||
+            depositAmount == 0)
+            return;
 
         // shouldn't need to attest ETH -> whETH -> USDC
         // await attestFromEthereumToSolana(
@@ -108,7 +123,7 @@ const Wormhole = () => {
         }
 
         // approve 
-        const amount = parseUnits("1", 18);
+        const amount = parseUnits(depositAmount.toString(), 18);
         await approveEth(ETH_TOKEN_BRIDGE_ADDRESS, tokenAddress, eth.signer, amount);
 
         // create a signer for Eth
@@ -122,6 +137,9 @@ const Wormhole = () => {
                 nativeToHexString(recipient.toString(), CHAIN_ID_SOLANA) || ""
             )
         );
+
+        toast.success('Transfer from Ethereum network complete, assets are briding to the Solana network\nThis could take some time.', toastOpts);
+
         // get the sequence from the logs (needed to fetch the vaa)
         const sequence = await parseSequenceFromLogEth(
             receipt,
@@ -138,17 +156,30 @@ const Wormhole = () => {
             sequence
         );
 
+        setSignedVaa(signedVAA);
+        toast.success('Solana message found. Please continue with Solana instructions to ', toastOpts);
+    }
+
+    const onWormholeRedeem = async () => {
+        if (!eth.signer ||
+            !wallet.publicKey ||
+            !wallet.signTransaction ||
+            !signedVaa) {
+            toast.error('An error occurred when redeeming your funds. Please use the wormhole recovery tool.', toastOpts);
+            return;
+        }
+
         await postVaaSolana(
             connection,
             wallet.signTransaction,
             SOL_BRIDGE_ADDRESS,
             wallet.publicKey.toString(),
-            Buffer.from(signedVAA)
+            Buffer.from(signedVaa)
         );
 
         await getIsTransferCompletedSolana(
             SOL_TOKEN_BRIDGE_ADDRESS,
-            signedVAA,
+            signedVaa,
             connection
         );
 
@@ -157,21 +188,28 @@ const Wormhole = () => {
             SOL_BRIDGE_ADDRESS,
             SOL_TOKEN_BRIDGE_ADDRESS,
             wallet.publicKey.toString(),
-            signedVAA
+            signedVaa
         );
 
         const signed = await wallet.signTransaction(transaction);
         const txid = await connection.sendRawTransaction(signed.serialize());
         console.log(`transaction id: ${txid}`);
         await connection.confirmTransaction(txid);
+        toast.success(`Your bridge to Solana has completed Tx: ${txid}. Now we can swap with Orcas AMMs to deposit USDC`, toastOpts);
+        setSignedVaa(undefined);
     }
-
     return (
-        <div>
-            <Button onClick={onEthSol}>ETH -{'>'} Solana</Button>
-            <Button onClick={onSwapSol}>Swap SOL</Button>
-        </div>
+        <>
+
+            <Button
+                onClick={signedVaa ? onWormholeRedeem : onWormholeDeposit}
+                className={styles.actionButton}>
+                {!isLoading ?
+                    <Spin tip="loading..." size='default'>
+                    </Spin> : signedVaa ? 'Redeem' : 'Bridge'}
+            </Button>
+        </>
     )
 }
 
-export default Wormhole;
+export default WormholeDeposit
