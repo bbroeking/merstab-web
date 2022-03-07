@@ -4,6 +4,7 @@ import NavBar from './NavBar';
 import AppFooter from './AppFooter';
 import styles from "../styles/AppLayout.module.css";
 import Head from 'next/head';
+import Link from 'next/link';
 
 const { Header, Content, Footer } = Layout;
 
@@ -11,7 +12,7 @@ const AppLayout = ({ children = undefined as any }) => {
     return (
         <Layout className={styles.root}>
             <Head>
-                <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap" rel="stylesheet"></link>
+                <Link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap"></Link>
             </Head>
             <Header className={styles.content} style={{ flexGrow: 0, zIndex: 2}}>
                 <NavBar></NavBar>

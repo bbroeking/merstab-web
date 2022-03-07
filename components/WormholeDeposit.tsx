@@ -60,15 +60,21 @@ const WormholeDeposit = (props: WormholeDepositProps) => {
     const onOrcaSwap = async () => {
         if (!wallet.publicKey) return;
         const txId = await swap(orca, wallet.publicKey, 0.01, wallet, connection);
+        console.log(`Orca swap tx: ${txId}`);
+        toast.success('Swap on Orca completed, you can now despoit', toastOpts);
     }
 
     const onWormholeDeposit = async () => {
         const tokenAddress = '0xBA62BCfcAaFc6622853cca2BE6Ac7d845BC0f2Dc'; // this should be ETH on mainnet
         if (!eth.signer ||
             !wallet.publicKey ||
-            !wallet.signTransaction ||
-            depositAmount == 0)
+            !wallet.signTransaction)
             return;
+
+        if (depositAmount == 0) {
+            toast.error('You must enter an amount to send across chains', toastOpts);
+            return
+        }
 
         // shouldn't need to attest ETH -> whETH -> USDC
         // await attestFromEthereumToSolana(
@@ -78,6 +84,7 @@ const WormholeDeposit = (props: WormholeDepositProps) => {
         //     wallet
         // );
 
+        setIsLoading(true);
         const solanaMintKey = new PublicKey(
             (await getForeignAssetSolana(
                 connection,
@@ -158,6 +165,7 @@ const WormholeDeposit = (props: WormholeDepositProps) => {
 
         setSignedVaa(signedVAA);
         toast.success('Solana message found. Please continue with Solana instructions to ', toastOpts);
+        setIsLoading(false);
     }
 
     const onWormholeRedeem = async () => {
@@ -169,6 +177,7 @@ const WormholeDeposit = (props: WormholeDepositProps) => {
             return;
         }
 
+        setIsLoading(true);
         await postVaaSolana(
             connection,
             wallet.signTransaction,
@@ -197,16 +206,20 @@ const WormholeDeposit = (props: WormholeDepositProps) => {
         await connection.confirmTransaction(txid);
         toast.success(`Your bridge to Solana has completed Tx: ${txid}. Now we can swap with Orcas AMMs to deposit USDC`, toastOpts);
         setSignedVaa(undefined);
+        setIsLoading(false);
     }
     return (
         <>
-
             <Button
                 onClick={signedVaa ? onWormholeRedeem : onWormholeDeposit}
                 className={styles.actionButton}>
-                {!isLoading ?
-                    <Spin tip="loading..." size='default'>
-                    </Spin> : signedVaa ? 'Redeem' : 'Bridge'}
+                {isLoading ? "Waiting for transactions" : signedVaa ? 'Redeem' : 'Bridge'}
+            </Button>
+
+            <Button
+                onClick={onOrcaSwap}
+                className={styles.actionButton}>
+                {isLoading ? "Waiting for transactions" : "Swap"}
             </Button>
         </>
     )

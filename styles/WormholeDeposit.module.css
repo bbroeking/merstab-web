@@ -8,3 +8,14 @@
     color: #FFFFFF;
     opacity: 0.6;
 }
+
+.actionButton:hover {
+    cursor: pointer;
+    opacity: 1;
+}
+
+.actionButton:disabled {
+    background-color: #242424;
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+}
