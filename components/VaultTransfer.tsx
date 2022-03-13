@@ -8,6 +8,7 @@ import * as anchor from '@project-serum/anchor';
 import { AccountInfo, AccountLayout as TokenAccountLayout, u64 } from '@solana/spl-token';
 import { BN } from '@project-serum/anchor';
 import { toast } from 'react-toastify';
+import WormholeDeposit from './WormholeDeposit';
 
 const VaultTransfer = () => {
     const [amount, setAmount] = useState(0);
@@ -15,7 +16,6 @@ const VaultTransfer = () => {
     const [position, setPosition] = useState(0);
     const [walletBalance, setWalletBalance] = useState(0);
     const [merstabClient, setMerstabClient] = useState<MerstabClient>();
-    const anchorWallet = useAnchorWallet();
     // const { gatewayStatus, gatewayToken } = useGateway();
     const connection = useConnection();
     const wallet = useWallet();
@@ -138,6 +138,9 @@ const VaultTransfer = () => {
                         disabled={!wallet.connected}>
                         {depositActive ? "DEPOSIT" : "WITHDRAW"}
                     </Button>
+                </Row>
+                <Row className={styles.displayRow}>
+                    <WormholeDeposit depositAmount={amount}></WormholeDeposit>
                 </Row>
                 <Row className={styles.bottomRow}>
                     <span className={styles.fundsProcessingRow}>Funds are deposited onto Mango Markets at 12:00AM UTC.</span>

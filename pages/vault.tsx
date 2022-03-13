@@ -5,7 +5,7 @@ import VaultPerformanceInfo from '../components/VaultPerformanceInfo';
 import VaultTransfer from '../components/VaultTransfer';
 import styles from '../styles/Vault.module.css';
 import dynamic from 'next/dynamic';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Vault = () => {
@@ -17,9 +17,7 @@ const Vault = () => {
         <>
             <div className={styles.vaultPageWrapper}>
             <DynamicBackgroundNoSSR></DynamicBackgroundNoSSR>
-
                 <div className={styles.vaultSection}>
-
                     <div className={styles.vaultDeposits}>
                         <VaultDepositsInfo></VaultDepositsInfo>
                     </div>
