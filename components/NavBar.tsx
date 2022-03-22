@@ -14,14 +14,16 @@ const NavBar = () => {
     return (
         <div className={router.pathname == "/" ? styles.navRow : styles.navRowBoxShadow}>
             <div className={styles.icon}>
-                <Link href={'/'}><Image src="/svg/logo.svg" alt='merstab logo' width={96} height={96}></Image></Link>
+                {/* <Link href={'/'}> */}
+                <Image src="/svg/logo.svg" alt='merstab logo' width={96} height={96}></Image>
+                {/* </Link> */}
             </div>
             <div className={styles.navTabs}>
                 {router.pathname !== '/' ?
                     <>
-                        <Link href={'/'} >
+                        {/* <Link href={'/'} >
                             <a className={`${styles.navItem} ${router.pathname == "/" ? styles.active : ""}`} >HOME</a>
-                        </Link>
+                        </Link> */}
                         <Link href={'/overview'}>
                             <a className={`${styles.navItem} ${router.pathname !== "/" ? styles.active : ""}`} >VAULTS</a>
                         </Link>
