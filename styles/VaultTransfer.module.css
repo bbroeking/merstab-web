@@ -145,6 +145,12 @@
     width: 8px;
 }
 
+@media (max-width: 1000px) {
+    .transferSection {
+        justify-content: center;
+    }
+}
+
 @media (max-width: 770px) {
     .transferSection {
         display: unset;

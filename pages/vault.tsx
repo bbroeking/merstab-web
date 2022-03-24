@@ -7,6 +7,7 @@ import styles from '../styles/Vault.module.css';
 import dynamic from 'next/dynamic';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AbstractWave from '../components/AbstractWave';
 
 const Vault = () => {
     const DynamicBackgroundNoSSR = dynamic(
@@ -16,7 +17,7 @@ const Vault = () => {
     return (
         <>
             <div className={styles.vaultPageWrapper}>
-            <DynamicBackgroundNoSSR></DynamicBackgroundNoSSR>
+            {/* <DynamicBackgroundNoSSR></DynamicBackgroundNoSSR> */}
                 <div className={styles.vaultSection}>
                     <div className={styles.vaultDeposits}>
                         <VaultDepositsInfo></VaultDepositsInfo>
@@ -29,6 +30,7 @@ const Vault = () => {
                         <VaultTransfer></VaultTransfer>
                     </div>
                 </div>
+                <AbstractWave></AbstractWave>
             </div>
             <ToastContainer></ToastContainer>
         </>
