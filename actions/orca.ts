@@ -13,8 +13,8 @@ export const swap = async (
     connection: Connection) => {
     /*** Swap ***/
     // 3. We will be swapping 0.1 SOL for some ORCA
-    const whETHUSDCPool = orca.getPool(OrcaPoolConfig.SOL_USDC);
-    const whETH = whETHUSDCPool.getTokenA();
+    const whETHUSDCPool = orca.getPool(OrcaPoolConfig.ORCA_SOL);
+    const whETH = whETHUSDCPool.getTokenB();
     const whETHAmount = new Decimal(amount);
     const quote = await whETHUSDCPool.getQuote(whETH, whETHAmount);
     const usdcAmount = quote.getMinOutputAmount();
