@@ -2,7 +2,7 @@
 
 module.exports = {
     // reactStrictMode: true,
-    // swcMinify: false,
+    swcMinify: false,
     webpack: (config, { isServer }) => {
         if (!isServer) {
             config.resolve.fallback.fs = false;
