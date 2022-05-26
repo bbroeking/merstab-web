@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 import styles from '../styles/VaultDepositsInfo.module.css';
 import Image from 'next/image';
 import * as anchor from '@project-serum/anchor';
-import { MerstabClient, Wallet } from '../protocol/merstab';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { MerstabClient, Wallet } from '../protocol/merstab';
 
 export const VAULT_CAPACITY = 100;
 const VaultDepositsInfo = () => {
@@ -15,9 +15,10 @@ const VaultDepositsInfo = () => {
 
     useEffect(() => {
         const setupClient = async () => {
-            const provider = new anchor.Provider(connection.connection, wallet as Wallet, anchor.Provider.defaultOptions());
-            const client = await MerstabClient.connect(provider, true);
-            const vaultValue = await client.getVaultValue();
+            const provider = new anchor.AnchorProvider(connection.connection, wallet as Wallet, anchor.AnchorProvider.defaultOptions());
+            const client = await MerstabClient.connect(provider, 'devnet'); // TODO: fix
+            const VAULT_NAME = 'another' // TODO: fix
+            const vaultValue = await client.getVaultValue(VAULT_NAME); // TODO: fix
             setMerstabClient(client);
             setVaultValue(vaultValue);
         }

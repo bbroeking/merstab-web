@@ -3,11 +3,12 @@ import styles from '../styles/VaultCard.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Col, Progress, Row } from 'antd';
-import { MerstabClient, Wallet } from '../protocol/merstab';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import * as anchor from '@project-serum/anchor';
 import { VAULT_CAPACITY } from './VaultDepositsInfo';
 import { AccountInfo, AccountLayout as TokenAccountLayout } from '@solana/spl-token';
+import { MerstabClient, Wallet } from '../protocol/merstab';
+import { PublicKey } from '@solana/web3.js';
 
 const VaultCard = () => {
     const connection = useConnection();
@@ -18,9 +19,10 @@ const VaultCard = () => {
 
     useEffect(() => {
         const setupClient = async () => {
-            const provider = new anchor.Provider(connection.connection, wallet as Wallet, anchor.Provider.defaultOptions());
-            const client = await MerstabClient.connect(provider, true);
-            const vaultValue = await client.getVaultValue();
+            const provider = new anchor.AnchorProvider(connection.connection, wallet as Wallet, anchor.AnchorProvider.defaultOptions());
+            const client = await MerstabClient.connect(provider, 'devnet'); // TODO: fix
+            const VAULT_NAME = 'another' // TODO: fix
+            const vaultValue = await client.getVaultValue(VAULT_NAME);
             setMerstabClient(client);
             setVaultValue(vaultValue);
         }
@@ -29,7 +31,8 @@ const VaultCard = () => {
 
     const fetchBalances = async () => {
         if (!merstabClient || !wallet || !wallet.publicKey) return;
-        const stakedTokenAccount = await merstabClient.getStakedTokenAccount(wallet.publicKey);
+        const vault = new PublicKey("5Fczud8oRx8f9yQhMcvW9EpehEpRyai5MBJieEgbTjfD"); // TODO: fix
+        const stakedTokenAccount = await merstabClient.getMTokenAccount(vault, wallet.publicKey);
         const stakedTokenAccountData = await connection.connection.getAccountInfo(stakedTokenAccount);
 
         try {
@@ -39,7 +42,6 @@ const VaultCard = () => {
             } else {
                 setPosition(0);
             }
-
         } catch (err) {
             console.log('Error fetching balances: ', err);
             setPosition(0);

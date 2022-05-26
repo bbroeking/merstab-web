@@ -2,13 +2,14 @@ import { Button, Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react'
 import styles from '../styles/VaultTransfer.module.css';
 import Image from 'next/image';
-import { MerstabClient, Wallet } from '../protocol/merstab';
-import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import * as anchor from '@project-serum/anchor';
 import { AccountInfo, AccountLayout as TokenAccountLayout, u64 } from '@solana/spl-token';
 import { BN } from '@project-serum/anchor';
 import { toast } from 'react-toastify';
 import WormholeDeposit from './WormholeDeposit';
+import { MerstabClient, Wallet } from '../protocol/merstab';
+import { PublicKey } from '@solana/web3.js';
 
 const VaultTransfer = () => {
     const [amount, setAmount] = useState(0);
@@ -16,27 +17,30 @@ const VaultTransfer = () => {
     const [position, setPosition] = useState(0);
     const [walletBalance, setWalletBalance] = useState(0);
     const [merstabClient, setMerstabClient] = useState<MerstabClient>();
-    // const { gatewayStatus, gatewayToken } = useGateway();
+
     const connection = useConnection();
     const wallet = useWallet();
 
     const setupClient = async () => {
-        const provider = new anchor.Provider(connection.connection, wallet as Wallet, anchor.Provider.defaultOptions());
-        const client = await MerstabClient.connect(provider, true);
+        const provider = new anchor.AnchorProvider(connection.connection, wallet as Wallet, anchor.AnchorProvider.defaultOptions());
+        const client = await MerstabClient.connect(provider, 'devnet');
         setMerstabClient(client);
     }
 
     useEffect(() => {
         if (!wallet) {
-            console.log("anchor wallet undefined")
+            console.log("anchor wallet undefined");
+            return;
         }
         setupClient();
     }, [wallet]);
 
     const fetchBalances = async () => {
         if (!merstabClient || !wallet || !wallet.publicKey) return;
-        const tokenAccount = await merstabClient.getTokenAccount(wallet.publicKey);
-        const stakedTokenAccount = await merstabClient.getStakedTokenAccount(wallet.publicKey);
+        const quoteMint = new PublicKey("BNH9xMad6Gh3qxGPbkwKE221gepfuUPMGs9XLGpVeBmv"); //TODO: fix
+        const vault = new PublicKey("5Fczud8oRx8f9yQhMcvW9EpehEpRyai5MBJieEgbTjfD");
+        const tokenAccount = await merstabClient.getTokenAccount(quoteMint, wallet.publicKey);
+        const stakedTokenAccount = await merstabClient.getMTokenAccount(vault, wallet.publicKey);
         const tokenAccountData = await connection.connection.getAccountInfo(tokenAccount);
         const stakedTokenAccountData = await connection.connection.getAccountInfo(stakedTokenAccount);
 
@@ -85,7 +89,7 @@ const VaultTransfer = () => {
             if (!wallet || !wallet.publicKey || !merstabClient) return;
         };
         if (depositActive) {
-            await merstabClient.stake(new anchor.BN(amount, undefined, "le"), wallet.publicKey); //gatewayToken?.publicKey, civicEnv.test.gatekeeperNetwork
+            await merstabClient.stake(new anchor.BN(amount, undefined, "le"), wallet.publicKey);
             toast.success('Deposit Successful', {
                 theme: "dark"
             });

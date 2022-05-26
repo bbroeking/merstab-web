@@ -5,5 +5,5 @@ import * as anchor from '@project-serum/anchor';
 export async function unstake(env: string, wallet: Keypair, amount: number) {
     const merstabClient = await initialize(env, wallet);
     console.log(`Unstaking from vault`);
-    return await merstabClient.unstake(new anchor.BN(amount), wallet.publicKey, wallet);
+    return await merstabClient.unstake(new anchor.BN(amount), wallet.publicKey, null, wallet);
 }
