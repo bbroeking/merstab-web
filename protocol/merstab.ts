@@ -35,19 +35,21 @@ export class MerstabClient {
 
     async getTokenAccount(quoteMint: PublicKey, wallet: PublicKey) {
         const mUSDCStakerAccount = await getAssociatedTokenAddress(quoteMint, wallet);
-        return await getAccount(mUSDCStakerAccount);
+        return await getAccount(this.connection, mUSDCStakerAccount);
     }
 
-    async getMTokenAccount(vault: PublicKey, wallet: PublicKey) {
-        const vaultData: VaultMetadata = await this.getVaultData(vault);
-        const merstabUSDCMint = vaultData.mint;
-        const mUSDCStakerAccount = await getAssociatedTokenAddress(merstabUSDCMint, wallet);
-        return await getAccount(mUSDCStakerAccount);
+    async getTokenAccountBalance(tokenAccount: PublicKey) {
+        return await this.connection.getTokenAccountBalance(tokenAccount);
     }
 
-    async getVaultValue(vaultName: string) {
+    async getMTokenAccount(mTokenMint: PublicKey, wallet: PublicKey) {
+        const mUSDCStakerAccount = await getAssociatedTokenAddress(mTokenMint, wallet);
+        return await getAccount(this.connection, mUSDCStakerAccount);
+    }
+
+    async getVaultDepositAccount(vaultName: string) {
         const [account, bump] = await this.deriveVaultAccount(vaultName);
-        return await getAccount(account);
+        return await getAccount(this.connection, account);
     }
 
     async getVaultData(key: PublicKey): Promise<VaultMetadata> {
