@@ -58,21 +58,19 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
     );
 
     return (
-        <EthereumProviderProvider>
-            <ConnectionProvider endpoint={endpoint}>
-                <WalletProvider wallets={wallets} autoConnect>
-                    <WalletModalProvider>
-                        <MerstabProvider env={network}>
+        <ConnectionProvider endpoint={endpoint}>
+            <WalletProvider wallets={wallets} autoConnect>
+                <WalletModalProvider>
+                    <MerstabProvider env={network}>
                         <AppLayout>
                             <Component>
                                 {pageProps}
                             </Component>
                         </AppLayout>
-                        </MerstabProvider>
-                    </WalletModalProvider>
-                </WalletProvider>
-            </ConnectionProvider>
-        </EthereumProviderProvider>
+                    </MerstabProvider>
+                </WalletModalProvider>
+            </WalletProvider>
+        </ConnectionProvider>
     );
 };
 
