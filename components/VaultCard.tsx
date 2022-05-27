@@ -1,59 +1,92 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from '../styles/VaultCard.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Col, Progress, Row } from 'antd';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import * as anchor from '@project-serum/anchor';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { VAULT_CAPACITY } from './VaultDepositsInfo';
-import { AccountInfo, AccountLayout as TokenAccountLayout } from '@solana/spl-token';
-import { MerstabClient, Wallet } from '../protocol/merstab';
+import { MerstabClient } from '../protocol/merstab';
 import { PublicKey } from '@solana/web3.js';
+import { useMerstab } from '../contexts/merstab';
+import * as anchor from '@project-serum/anchor';
 
-const VaultCard = () => {
-    const connection = useConnection();
+export interface VaultCardProps {
+    client: MerstabClient | null;
+    depositMint: PublicKey;
+    mTokenMint: PublicKey;
+    vaultName: string;
+}
+
+const VaultCard = (props: VaultCardProps) => {
     const wallet = useWallet();
-    const [merstabClient, setMerstabClient] = useState<MerstabClient>();
-    const [vaultValue, setVaultValue] = useState<number>(0);
-    const [position, setPosition] = useState(0);
+    const [availableDepositToken, setAvailableDepositToken] = useState<number>(0);
+    const [vaultDeposits, setVaultDeposits] = useState<number>(0);
+    const [mTokenMint, setMToken] = useState<number>(0);
 
-    useEffect(() => {
-        const setupClient = async () => {
-            const provider = new anchor.AnchorProvider(connection.connection, wallet as Wallet, anchor.AnchorProvider.defaultOptions());
-            const client = await MerstabClient.connect(provider, 'devnet'); // TODO: fix
-            const VAULT_NAME = 'another' // TODO: fix
-            const vaultValue = await client.getVaultValue(VAULT_NAME);
-            setMerstabClient(client);
-            setVaultValue(vaultValue);
-        }
-        setupClient();
-    }, []);
+    const { client } = useMerstab();
 
-    const fetchBalances = async () => {
-        if (!merstabClient || !wallet || !wallet.publicKey) return;
-        const vault = new PublicKey("5Fczud8oRx8f9yQhMcvW9EpehEpRyai5MBJieEgbTjfD"); // TODO: fix
-        const stakedTokenAccount = await merstabClient.getMTokenAccount(vault, wallet.publicKey);
-        const stakedTokenAccountData = await connection.connection.getAccountInfo(stakedTokenAccount);
+    const fetchBalances = useCallback(async () => {
+        if (!client || !wallet || !wallet.publicKey) {
+            console.log(`One of the following are undefined: ${client}, ${wallet}`);
+            return
+        };
 
         try {
-            if (stakedTokenAccountData) {
-                const parsedStakedTokenAccountData = TokenAccountLayout.decode(stakedTokenAccountData?.data) as AccountInfo;
-                setPosition(new anchor.BN(parsedStakedTokenAccountData.amount, undefined, "le").toNumber());
+            const depositTokenAccount = await client.getTokenAccount(props.depositMint, wallet.publicKey);
+            if (depositTokenAccount) {
+                const balance = await client.getTokenAccountBalance(depositTokenAccount.address);
+                if (balance?.value?.uiAmount) {
+                    console.log(balance?.value?.uiAmount)
+                    setAvailableDepositToken(balance?.value?.uiAmount);
+                } else {
+                    setAvailableDepositToken(0);
+                }
             } else {
-                setPosition(0);
+                setAvailableDepositToken(0);
             }
+
+
+            const vaultDepositTokenAccount = await client.getVaultDepositAccount(props.vaultName);
+            if (vaultDepositTokenAccount) {
+                const balance = await client.getTokenAccountBalance(vaultDepositTokenAccount.address);
+                if (balance?.value?.uiAmount) {
+                    console.log(balance?.value?.uiAmount)
+                    setVaultDeposits(balance?.value?.uiAmount);
+                } else {
+                    setVaultDeposits(0);
+                }
+            } else {
+                setVaultDeposits(0);
+            }
+
+            const merstabDepositTokenAccount = await client.getMTokenAccount(props.mTokenMint, wallet.publicKey);
+            console.log(`vault deposits: ${merstabDepositTokenAccount.address}`);
+
+            if (merstabDepositTokenAccount) {
+                const balance = await client.getTokenAccountBalance(merstabDepositTokenAccount.address);
+                if (balance?.value?.uiAmount) {
+                    setMToken(balance?.value?.uiAmount);
+                } else {
+                    setMToken(0);
+                }
+            } else {
+                setMToken(0);
+            }
+
         } catch (err) {
             console.log('Error fetching balances: ', err);
-            setPosition(0);
+            setAvailableDepositToken(0);
+            setVaultDeposits(0);
+            setMToken(0);
         }
-    }
+    }, [client, props.depositMint, props.mTokenMint]);
 
     useEffect(() => {
         fetchBalances();
-    }, [merstabClient]);
-    
+    }, [client]);
+
     return (
-        <Link href='/vault'>
+        <Link href='/vaults/DEVNETPERP'>
             <div className={styles.vaultCard}>
                 <Row className={styles.assetInfo}>
                     <div className={styles.spacer}></div>
@@ -78,14 +111,14 @@ const VaultCard = () => {
                 <Col className={styles.vaultDepositsStatus}>
                     <Row style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 8 }}>
                         <span>Deposits</span>
-                        <span>{vaultValue} USDC</span>
+                        <span>{vaultDeposits} USDC</span>
                     </Row>
                     <Row>
                         <Progress
                             strokeColor='#D74B5E'
                             strokeLinecap='square'
                             trailColor='#474747'
-                            percent={(vaultValue / VAULT_CAPACITY ) * 100}
+                            percent={(vaultDeposits / VAULT_CAPACITY) * 100}
                             showInfo={false} />
                     </Row>
                     <Row style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8 }}>
@@ -96,11 +129,10 @@ const VaultCard = () => {
 
                 <Row className={styles.positionRow}>
                     <Col>Your position:</Col>
-                    <Col>{position} USDC</Col>
+                    <Col>{mTokenMint} USDC</Col>
                 </Row>
             </div>
         </Link>)
 };
-
 
 export default VaultCard;
