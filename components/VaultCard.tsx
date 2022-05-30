@@ -14,7 +14,7 @@ export interface VaultCardProps {
     client: MerstabClient | null;
     depositMint: PublicKey;
     mTokenMint: PublicKey;
-    vaultName: string;
+    vault: PublicKey;
 }
 
 const VaultCard = (props: VaultCardProps) => {
@@ -46,7 +46,7 @@ const VaultCard = (props: VaultCardProps) => {
             }
 
 
-            const vaultDepositTokenAccount = await client.getVaultDepositAccount(props.vaultName);
+            const vaultDepositTokenAccount = await client.getVaultDepositAccount(props.vault);
             if (vaultDepositTokenAccount) {
                 const balance = await client.getTokenAccountBalance(vaultDepositTokenAccount.address);
                 if (balance?.value?.uiAmount) {

@@ -35,11 +35,14 @@ programCommand('add-vault')
         '--name <string>',
         'name of the vault'
     )
+    .requiredOption(
+        '--limit <string>',
+        'limit of the vault'
+    )
     .action(async (directory, cmd) => {
-        const { keypair, env, name } = cmd.opts();
-        console.log(env);
+        const { keypair, env, name, limit, depositMint } = cmd.opts();
         const wallet = loadWalletKey(keypair);
-        await addVault(env, wallet, name);
+        await addVault(env, wallet, name, limit, depositMint);
     });
 
 programCommand('stake')
@@ -47,10 +50,18 @@ programCommand('stake')
         '--amount <string>',
         'amount of tokens to stake'
     )
+    .requiredOption(
+        '--vault <string>',
+        'public key of the vault'
+    )
+    .requiredOption(
+        '--deposit-mint <string>',
+        'coin that your are staking'
+    )
     .action(async (directory, cmd) => {
-        const { keypair, env, amount } = cmd.opts();
+        const { keypair, env, amount, vault, depositMint } = cmd.opts();
         const wallet = loadWalletKey(keypair);
-        const txid = await stake(env, wallet, amount);
+        const txid = await stake(env, wallet, amount, vault, depositMint);
         console.log(`Stake txid: ${txid}`)
     });
 
@@ -59,10 +70,18 @@ programCommand('unstake')
         '--amount <string>',
         'amount of tokens to stake'
     )
+    .requiredOption(
+        '--vault <string>',
+        'public key of the vault'
+    )
+    .requiredOption(
+        '--deposit-mint <string>',
+        'coin that your are staking'
+    )
     .action(async (directory, cmd) => {
-        const { keypair, env, amount } = cmd.opts();
+        const { keypair, env, amount, vault, depositMint } = cmd.opts();
         const wallet = loadWalletKey(keypair);
-        const txid = await unstake(env, wallet, amount);
+        const txid = await unstake(env, wallet, amount, vault, depositMint);
         console.log(`Unstake txid: ${txid}`)
     });
 

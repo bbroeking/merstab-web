@@ -11,8 +11,9 @@ import { useMerstab } from '../contexts/merstab';
 
 export interface VaultTransferProps {
     depositMint: PublicKey;
+    depositMintDecimals: number;
     mTokenMint: PublicKey;
-    vaultName: string;
+    vault: PublicKey;
 }
 
 const VaultTransfer = (props: VaultTransferProps) => {
@@ -25,7 +26,7 @@ const VaultTransfer = (props: VaultTransferProps) => {
     const [vaultDeposits, setVaultDeposits] = useState<number>(0);
     const [mTokenMint, setMToken] = useState<number>(0);
 
-    const fetchBalances = useCallback(async () => {
+    const fetchBalances = async () => {
         if (!client || !wallet || !wallet.publicKey) {
             console.log(`One of the following are undefined: ${client}, ${wallet}`);
             return
@@ -46,7 +47,7 @@ const VaultTransfer = (props: VaultTransferProps) => {
             }
 
 
-            const vaultDepositTokenAccount = await client.getVaultDepositAccount(props.vaultName);
+            const vaultDepositTokenAccount = await client.getVaultDepositAccount(props.vault);
             if (vaultDepositTokenAccount) {
                 const balance = await client.getTokenAccountBalance(vaultDepositTokenAccount.address);
                 if (balance?.value?.uiAmount) {
@@ -79,7 +80,7 @@ const VaultTransfer = (props: VaultTransferProps) => {
             setVaultDeposits(0);
             setMToken(0);
         }
-    }, [client, props.depositMint, props.mTokenMint]);
+    };
     
     useEffect(() => {
         fetchBalances()
@@ -105,16 +106,28 @@ const VaultTransfer = (props: VaultTransferProps) => {
             if (!wallet || !wallet.publicKey || !client) return;
         };
         if (depositActive) {
-            await client.stake(new anchor.BN(amount), wallet.publicKey);
-            toast.success('Deposit Successful', {
-                theme: "dark"
-            });
+            const programAmount = amount * 10 ** props.depositMintDecimals;
+            try {
+                await client.stake(new anchor.BN(programAmount), wallet.publicKey, props.vault, props.depositMint, null, wallet.sendTransaction);
+                toast.success('Deposit Successful', {
+                    theme: "dark"
+                });
+            } catch (err) {
+                console.log(err);
+                toast.error(`Error depositing ${amount} into vault: ${props.vault.toString().substring(props.vault.toString().length - 4)}`, { theme: "dark" });
+            }
         }
         else {
-            await client.unstake(new anchor.BN(amount), wallet.publicKey);
-            toast.success('Withdrawal Successful', {
-                theme: "dark"
-            });
+            const programAmount = amount * 10 ** props.depositMintDecimals;
+            try {
+                await client.unstake(new anchor.BN(programAmount), wallet.publicKey, props.vault, props.depositMint, null, wallet.sendTransaction);
+                toast.success('Withdrawal Successful', {
+                    theme: "dark"
+                });    
+            } catch (err) {
+                console.log(err);
+                toast.error(`Error withdrawing ${amount} from vault: ${props.vault.toString().substring(props.vault.toString().length - 4)}`, { theme: "dark" });
+            }
         }
         fetchBalances();
     }

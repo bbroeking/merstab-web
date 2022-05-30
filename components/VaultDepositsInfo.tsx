@@ -5,10 +5,11 @@ import Image from 'next/image';
 import * as anchor from '@project-serum/anchor';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useMerstab } from '../contexts/merstab';
+import { PublicKey } from '@solana/web3.js';
 
 export const VAULT_CAPACITY = 100;
 export interface VaultDepositsInfoProps {
-    vaultName: string
+    vault: PublicKey
 }
 
 const VaultDepositsInfo = (props: VaultDepositsInfoProps) => {
@@ -19,7 +20,7 @@ const VaultDepositsInfo = (props: VaultDepositsInfoProps) => {
         if (!client) return;
         const fetchBalances = async () => {
             try {
-                const vaultDepositTokenAccount = await client.getVaultDepositAccount(props.vaultName);
+                const vaultDepositTokenAccount = await client.getVaultDepositAccount(props.vault);
                 if (vaultDepositTokenAccount) {
                     const balance = await client.getTokenAccountBalance(vaultDepositTokenAccount.address);
                     if (balance?.value?.uiAmount) {

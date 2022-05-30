@@ -20,7 +20,7 @@ const Overview = () => {
                 <div className={styles.text}>Vault Strategies are pools of funds with an associated strategy for maximizing returns on the asset in the vault. </div>
                 <Row className={styles.totalValueLocked}>$100,000 TVL</Row>
                 <Row className={styles.vaults}>
-                    <VaultCard client={client} depositMint={DevnetPerp.depositMint} mTokenMint={DevnetPerp.mTokenMint} vaultName={DevnetPerp.vaultName}></VaultCard>
+                    <VaultCard client={client} depositMint={DevnetPerp.depositMint} mTokenMint={DevnetPerp.mTokenMint} vault={DevnetPerp.vault}></VaultCard>
                 </Row>
             </Col>
         </div>

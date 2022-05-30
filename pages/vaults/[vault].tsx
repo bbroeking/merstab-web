@@ -15,22 +15,23 @@ const Vault = () => {
   const { vault } = router.query;
 
   const depositMint = DevnetPerp.depositMint;
+  const depositMintDecimals = DevnetPerp.depositMintDecimals;
   const mTokenMint = DevnetPerp.mTokenMint;
-  const vaultName = DevnetPerp.vaultName;
+  const vaultPk = DevnetPerp.vault;
 
   return (
     <>
       <div className={styles.vaultPageWrapper}>
         <div className={styles.vaultSection}>
           <div className={styles.vaultDeposits}>
-            <VaultDepositsInfo vaultName={vaultName}></VaultDepositsInfo>
+            <VaultDepositsInfo vault={vaultPk}></VaultDepositsInfo>
           </div>
           <div className={styles.vaultPerformance}>
             <VaultPerformanceInfo></VaultPerformanceInfo>
           </div>
           <div className={styles.vaultTransactions}>
             <StrategyInfo></StrategyInfo>
-            <VaultTransfer depositMint={depositMint} mTokenMint={mTokenMint} vaultName={vaultName} ></VaultTransfer>
+            <VaultTransfer depositMint={depositMint} mTokenMint={mTokenMint} vault={vaultPk} depositMintDecimals={depositMintDecimals}></VaultTransfer>
           </div>
         </div>
         <AbstractWave></AbstractWave>
