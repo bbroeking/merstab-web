@@ -1,264 +1,261 @@
+// @ts-ignore
+import { getMint, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, createMint, TOKEN_PROGRAM_ID, getAccount } from '@solana/spl-token';
 import * as anchor from '@project-serum/anchor';
-import { PublicKey, Transaction } from '@solana/web3.js';
-import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID, AccountLayout as TokenAccountLayout } from '@solana/spl-token';
-const idl = require('./idls/devnet.json');
+import { Keypair, PublicKey, sendAndConfirmTransaction, Signer, SystemProgram, SYSVAR_RENT_PUBKEY, Transaction } from '@solana/web3.js';
+import idl from "./idls/merstab_protocol.json";
 
 export interface VaultMetadata {
-    vault: PublicKey,
-    tokenVaultPDA: PublicKey,
-    tokenMint: PublicKey,
-    stakedTokenMint: PublicKey,
-    tokenVaultAuthPDA: PublicKey
-    stakedTokenMintAuthority: PublicKey
+    manager: PublicKey,
+    mint: PublicKey,
+    name: string,
+    limit: number,
 }
 
 /**
  * Wallet interface for objects that can be used to sign provider transactions.
  */
 export interface Wallet {
-    signTransaction(tx: Transaction): Promise<Transaction>;
-    signAllTransactions(txs: Transaction[]): Promise<Transaction[]>;
+    signTransaction: (transaction: Transaction) => Promise<Transaction>;
+    signAllTransactions: (transaction: Transaction[]) => Promise<Transaction[]>;
     publicKey: PublicKey;
 }
-
-const PubKeysInternedMap = new Map<string, PublicKey>();
-export const toPublicKey = (key: string | PublicKey) => {
-    if (typeof key !== 'string') {
-        return key;
-    }
-
-    let result = PubKeysInternedMap.get(key);
-    if (!result) {
-        result = new PublicKey(key);
-        PubKeysInternedMap.set(key, result);
-    }
-
-    return result;
-};
-
-const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID: PublicKey = new PublicKey(
-    'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-);
-
-export async function findAssociatedTokenAddress(
-    walletAddress: PublicKey,
-    tokenMintAddress: PublicKey
-): Promise<PublicKey> {
-    return (await PublicKey.findProgramAddress(
-        [
-            walletAddress.toBuffer(),
-            TOKEN_PROGRAM_ID.toBuffer(),
-            tokenMintAddress.toBuffer(),
-        ],
-        SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
-    ))[0];
-}
-
-/**
- * Convert some object of fields with address-like values,
- * such that the values are converted to their `PublicKey` form.
- * @param obj The object to convert
- */
-export function toPublicKeys(
-    obj: Record<string, string | PublicKey | any>
-): any {
-    const newObj: any = {};
-
-    for (const key in obj) {
-        if (key == "name") continue;
-        const value = obj[key];
-
-        if (typeof value == "string") {
-            newObj[key] = new PublicKey(value);
-        } else if (typeof value == "object" && "publicKey" in value) {
-            newObj[key] = value.publicKey;
-        } else {
-            newObj[key] = value;
-        }
-    }
-
-    return newObj;
-}
-
-
-
-export async function getOrInitTokenAccounts(
-    merstabClient: MerstabClient,
-    vaultMetadata: VaultMetadata,
-    walletPubKey: PublicKey,
-) {
-    // calculate ATA
-    let ata = await Token.getAssociatedTokenAddress(
-        ASSOCIATED_TOKEN_PROGRAM_ID, // always ASSOCIATED_TOKEN_PROGRAM_ID
-        TOKEN_PROGRAM_ID, // always TOKEN_PROGRAM_ID
-        vaultMetadata.tokenMint, // mint
-        walletPubKey // owner
-    );
-    console.log(`ATA: ${ata.toBase58()}`);
-
-    // create account if doesn't exist -- testing
-    const tokenAccountData = await merstabClient.program.provider.connection.getAccountInfo(ata)
-    if (!tokenAccountData) {
-        let tx = new Transaction().add(
-            Token.createAssociatedTokenAccountInstruction(
-                ASSOCIATED_TOKEN_PROGRAM_ID, // always ASSOCIATED_TOKEN_PROGRAM_ID
-                TOKEN_PROGRAM_ID, // always TOKEN_PROGRAM_ID
-                vaultMetadata.stakedTokenMint, // mint
-                ata, // ata
-                walletPubKey, // owner of token account
-                walletPubKey // fee payer
-            )
-        );
-        try {
-            const txId = await merstabClient.program.provider.send(tx)
-            console.log(`txhash- create account: ${txId}`);
-
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
-    let stakedATA = await Token.getAssociatedTokenAddress(
-        ASSOCIATED_TOKEN_PROGRAM_ID, // always ASSOCIATED_TOKEN_PROGRAM_ID
-        TOKEN_PROGRAM_ID, // always TOKEN_PROGRAM_ID
-        vaultMetadata.stakedTokenMint, // mint
-        walletPubKey // owner
-    );
-    console.log(`Staked ATA: ${stakedATA.toBase58()}`);
-
-    const stakedAccountData = await merstabClient.program.provider.connection.getAccountInfo(stakedATA)
-    if (!stakedAccountData) {
-        let tx = new Transaction();
-        const ix = Token.createAssociatedTokenAccountInstruction(
-            ASSOCIATED_TOKEN_PROGRAM_ID, // always ASSOCIATED_TOKEN_PROGRAM_ID
-            TOKEN_PROGRAM_ID, // always TOKEN_PROGRAM_ID
-            vaultMetadata.stakedTokenMint, // mint
-            stakedATA, // ata
-            walletPubKey, // owner of token account
-            walletPubKey // fee payer
-        )
-        tx.add(ix);
-        try {
-            const txId = await merstabClient.program.provider.send(tx)
-            console.log(`txhash- create account: ${txId}`);
-
-        } catch (err) {
-            console.log(err)
-        }
-    }
-    return { ata, stakedATA };
-}
-
-export function airdropTestToken() {
-    // let tsfrTx = new Transaction();
-    // let tsfrIx = await Token.createTransferInstruction(TOKEN_PROGRAM_ID, tokenAccount, ata, wallet.publicKey, [], 100);
-    // tsfrTx.add(tsfrIx);
-    // console.log(`txhash: ${await merstabClient.program.provider.send(tsfrTx)}`);
-}
-
 export class MerstabClient {
-    constructor(public program: anchor.Program, public devnet: boolean, public vaultMetadata: VaultMetadata) { }
-
-    static async connect(provider: anchor.Provider, devnet: boolean): Promise<MerstabClient> {
-        // const network = devnet ? 'devnet' : 'mainnet-beta';
-        const MERSTAB_ID = new PublicKey("37n7Fd74Mgt7V24VtfYrr5zGFKm5x9fhRNCQXjZZVCRN");
-        const program = new anchor.Program(idl, MERSTAB_ID, provider);
-        const vaultMetdata = toPublicKeys(idl.metadata) as VaultMetadata;
-
-        return new MerstabClient(program, devnet, vaultMetdata);
+    connection: anchor.web3.Connection;
+    constructor(public program: anchor.Program, public network: string) {
+        this.connection = program.provider.connection;
     }
 
-    async getVaultValue(): Promise<number> {
-        const tokenAccountData = await this.program.provider.connection.getAccountInfo(this.vaultMetadata.tokenVaultPDA);
-        const parsedStakedTokenAccountData = TokenAccountLayout.decode(tokenAccountData?.data);
+    static async connect(provider: anchor.AnchorProvider, network: string): Promise<MerstabClient> {
+        const program = new anchor.Program(idl as any, MerstabClient.MERSTAB_ID, provider);
+        return new MerstabClient(program, network);
+    }
+    static MERSTAB_ID = new PublicKey("CJiz6gsuyCpMAuDpnP8vdTuKRp7Nuf3KJkgdTxeiKFup");
+    static MANGO_OWNER_PDA_SEED = 'mango_owner_pda_seed';
+    static STAKED_TOKENS_PDA_SEED = 'staked_token_mint_authority';
+    static VAULT_SEED = 'vault-seed';
 
-        return new anchor.BN(parsedStakedTokenAccountData.amount, undefined, "le").toNumber();
+    async getTokenAccount(quoteMint: PublicKey, wallet: PublicKey) {
+        const mUSDCStakerAccount = await getAssociatedTokenAddress(quoteMint, wallet);
+        return await getAccount(this.connection, mUSDCStakerAccount);
     }
 
-    async getTokenAccount(walletPubKey: PublicKey) {
-        return await Token.getAssociatedTokenAddress(
-            ASSOCIATED_TOKEN_PROGRAM_ID,
-            TOKEN_PROGRAM_ID,
-            this.vaultMetadata.tokenMint,
-            walletPubKey
+    async getTokenAccountBalance(tokenAccount: PublicKey) {
+        return await this.connection.getTokenAccountBalance(tokenAccount);
+    }
+
+    async getMTokenAccount(mTokenMint: PublicKey, wallet: PublicKey) {
+        const mUSDCStakerAccount = await getAssociatedTokenAddress(mTokenMint, wallet);
+        return await getAccount(this.connection, mUSDCStakerAccount);
+    }
+
+    async getVaultDepositAccount(vault: PublicKey) {
+        const [account, bump] = await this.deriveVaultAccount(vault);
+        return await getAccount(this.connection, account);
+    }
+
+    async getVaultData(key: PublicKey): Promise<VaultMetadata> {
+        return (await this.program.account.vault.fetch(key)) as unknown as VaultMetadata;
+    }
+
+    async deriveMangoAccount(vault: PublicKey) {
+        return await PublicKey.findProgramAddress(
+            [
+                Buffer.from(anchor.utils.bytes.utf8.encode(MerstabClient.MANGO_OWNER_PDA_SEED)),
+                vault.toBytes(),
+            ],
+            this.program.programId
         );
     }
 
-    async getStakedTokenAccount(walletPubKey: PublicKey) {
-        return await Token.getAssociatedTokenAddress(
-            ASSOCIATED_TOKEN_PROGRAM_ID,
-            TOKEN_PROGRAM_ID,
-            this.vaultMetadata.stakedTokenMint,
-            walletPubKey
+    async deriveVaultAccount(vault: PublicKey) {
+        return await PublicKey.findProgramAddress(
+            [
+                Buffer.from(anchor.utils.bytes.utf8.encode(MerstabClient.VAULT_SEED)),
+                vault.toBytes(),
+            ],
+            this.program.programId
         );
     }
 
-    async stake(
-        amount: anchor.BN,
+    async deriveMTokenAuthority(vault: PublicKey) {
+        return await PublicKey.findProgramAddress(
+            [
+                Buffer.from(anchor.utils.bytes.utf8.encode(MerstabClient.STAKED_TOKENS_PDA_SEED)),
+                vault.toBytes(),
+            ],
+            this.program.programId
+        );
+    }
+
+    // node helper function
+    async addVault(vaultName: string, wallet: Keypair, limit: number, depositMint: string) {
+        const vault = Keypair.generate();
+        console.log(`New vault public key ${vault.publicKey.toString()}`);
+
+        const [mangoOwnerPDA, mangoOwnerBump] = await this.deriveMangoAccount(vault.publicKey);
+        const [tokenAccountPDA, tokenAccountBump] = await this.deriveVaultAccount(vault.publicKey);
+
+        const stakedMint = await createMint(
+            this.connection,
+            wallet,
+            wallet.publicKey,
+            wallet.publicKey,
+            6,
+            anchor.web3.Keypair.generate(),
+            null,
+            TOKEN_PROGRAM_ID
+        );
+        console.log(`Staked token mint: ${stakedMint.toString()}`);
+
+        // generated by me
+        const quoteMint = new PublicKey(depositMint);
+
+        this.program.methods
+            .addVault(vaultName, new anchor.BN(limit), mangoOwnerBump)
+            .accounts({
+                vault: vault.publicKey,
+                manager: wallet.publicKey,
+                tokenAccount: tokenAccountPDA,
+                tokenAccountAuthority: mangoOwnerPDA,
+                stakedTokenMint: stakedMint,
+                payer: wallet.publicKey,
+                mint: quoteMint,
+                rent: SYSVAR_RENT_PUBKEY,
+                tokenProgram: TOKEN_PROGRAM_ID,
+                systemProgram: SystemProgram.programId,
+            })
+            .signers([vault, wallet])
+            .rpc()
+    }
+
+    async stake(amount: anchor.BN,
         wallet: PublicKey,
-        // gatewayToken: PublicKey,
-        // gatekeeperNetwork: PublicKey,
-    ) {
+        vaultPk: PublicKey,
+        depositMint: PublicKey,
+        keypair?: Keypair | null,
+        sendTransaction?: Function) {
+        // get these values from add vault
+        const vault = vaultPk;
+        console.log(`Vault: ${vault.toString()}`);
+        const vaultData: VaultMetadata = await this.getVaultData(vault);
+        const merstabUSDCMint = vaultData.mint;
+        console.log(merstabUSDCMint.toString());
+
+        // init tx
+        const tx = new Transaction();
+
+        const mUSDCStakerAccount = await getAssociatedTokenAddress(merstabUSDCMint, wallet);
+
         try {
-
-            const { ata, stakedATA } = await getOrInitTokenAccounts(this, this.vaultMetadata, wallet);
-            const ix = await this.program.instruction.stake(amount, {
-                accounts: {
-                    vault: this.vaultMetadata.vault,
-                    tokenVault: this.vaultMetadata.tokenVaultPDA,
-                    stakersTokenAccount: ata,
-                    stakersAta: stakedATA,
-                    stakedTokenMintAuthority: this.vaultMetadata.stakedTokenMintAuthority,
-                    staker: wallet,
-                    stakedTokenMint: this.vaultMetadata.stakedTokenMint,
-                    tokenProgram: TOKEN_PROGRAM_ID,
-
-                    // userWallet: wallet, civic
-                    // gatewayToken,
-                    // gatekeeperNetwork
-                },
-            });
-
-            const tx = new Transaction().add(ix);
-            const txId = await this.program.provider.send(tx)
-            console.log(`txhash- create account: ${txId}`);
-
+            const merstabTokenAccountInfo = await getAccount(this.connection, mUSDCStakerAccount);
+            console.log(`Found token account existing for mint: ${mUSDCStakerAccount.toString()}`);
         } catch (err) {
-            console.log(err)
+            console.log(err);
+            console.log(`Could not find token account ${mUSDCStakerAccount.toString()}`);
+            console.log(`Creating token account ${mUSDCStakerAccount.toString()}`);
+
+            const ataIx = createAssociatedTokenAccountInstruction(
+                wallet,
+                mUSDCStakerAccount,
+                wallet,
+                merstabUSDCMint,
+            )
+            tx.add(ataIx);
+        }
+
+        const walletUSDCAccount = await getAssociatedTokenAddress(depositMint, wallet);
+        const [tokenAccountPDA, tokenAccountBump] = await this.deriveVaultAccount(vault);
+        const [stakedTokenMintPDA, stakedTokenMintBump] = await this.deriveMTokenAuthority(vault);
+
+        try {
+            const ix = await this.program.methods
+                .stake(amount, tokenAccountBump, stakedTokenMintBump)
+                .accounts({
+                    vault: vault,
+                    vaultTokenAccount: tokenAccountPDA, // vault USDC
+                    stakersTokenAccount: walletUSDCAccount, // user USDC
+                    stakersAta: mUSDCStakerAccount, // user merUSDC
+                    stakedTokenMintAuthority: stakedTokenMintPDA, // should be same as mUSDCMint.mintAuthority
+                    staker: wallet,
+                    stakedTokenMint: merstabUSDCMint,
+                    tokenProgram: TOKEN_PROGRAM_ID,
+                })
+                .instruction();
+            tx.add(ix);
+
+            if (sendTransaction) {
+                const signature = await sendTransaction(tx, this.connection);
+                console.log(`txhash: ${signature}`);
+                await this.connection.confirmTransaction(signature, "processed");
+            } else {
+                const txId = await sendAndConfirmTransaction(this.connection, tx, [keypair as anchor.web3.Signer]);
+                console.log(`txhash: ${txId}`);
+                return txId;
+            }
+        } catch (err) {
+            console.log(err);
+            throw err;
         }
     }
 
-    async unstake(amount: anchor.BN, wallet: PublicKey) {
+    async unstake(amount: anchor.BN,
+        wallet: PublicKey,
+        vaultPk: PublicKey,
+        withdrawMint: PublicKey,
+        keypair?: Keypair | null,
+        sendTransaction?: Function) {
+        // get these values from add vault
+        const vault = vaultPk;
+        const vaultData: VaultMetadata = await this.getVaultData(vault);
+        const merstabUSDCMint = vaultData.mint;
+
+        const mUSDCMint = await getMint(this.connection, merstabUSDCMint, null, TOKEN_PROGRAM_ID);
+        const mUSDCStakerAccount = await getAssociatedTokenAddress(merstabUSDCMint, wallet);
+
         try {
-            const [token_vault_auth_pda, token_vault_auth_bump] = await PublicKey.findProgramAddress(
-                [
-                    Buffer.from(anchor.utils.bytes.utf8.encode("token_vault_authority")),
-                    Buffer.from(anchor.utils.bytes.utf8.encode('RdtHKxfH4r'))
-                ],
-                this.program.programId
-            );
-            console.log(token_vault_auth_pda);
-
-            const { ata, stakedATA } = await getOrInitTokenAccounts(this, this.vaultMetadata, wallet);
-            const unstakeIx = await this.program.instruction.unstake(amount, {
-                accounts: {
-                    vault: this.vaultMetadata.vault,
-                    tokenVault: this.vaultMetadata.tokenVaultPDA,
-                    tokenVaultAuthority: token_vault_auth_pda,
-                    stakersTokenAccount: ata,
-                    stakersAta: stakedATA,
-                    stakedTokenMintAuthority: this.vaultMetadata.stakedTokenMintAuthority,
-                    staker: wallet,
-                    stakedTokenMint: this.vaultMetadata.stakedTokenMint,
-                    tokenProgram: TOKEN_PROGRAM_ID,
-                },
-            })
-            const tx = new Transaction().add(unstakeIx);
-            const txId = await this.program.provider.send(tx)
-            console.log(`txhash- create account: ${txId}`);
-
+            const mUSDCAccountInfo = await getAccount(this.connection, mUSDCStakerAccount);
+            console.log(`Found token account existing for mint: ${mUSDCStakerAccount.toString()}`);
         } catch (err) {
-            console.log(err)
+            console.log(err);
+            console.log(`Could not find token account ${mUSDCStakerAccount.toString()}`);
+            throw new Error("Account does not exist");
+        }
+
+        const walletUSDCAccount = await getAssociatedTokenAddress(withdrawMint, wallet);
+        const [mangoOwnerPDA, mangoOwnerBump] = await this.deriveMangoAccount(vault);
+        const [tokenAccountPDA, tokenAccountBump] = await this.deriveVaultAccount(vault);
+        const [stakedTokenMintPDA, stakedTokenMintBump] = await this.deriveMTokenAuthority(vault);
+
+        try {
+            const ix = await this.program.methods
+                .unstake(new anchor.BN(amount), mangoOwnerBump)
+                .accounts({
+                    vault: vault,
+                    vaultTokenAccount: tokenAccountPDA,
+                    vaultTokenAuthority: mangoOwnerPDA,
+                    stakersTokenAccount: walletUSDCAccount,
+                    stakersAta: mUSDCStakerAccount,
+                    stakedTokenMintAuthority: stakedTokenMintPDA,
+                    staker: wallet,
+                    stakedTokenMint: merstabUSDCMint,
+                    tokenProgram: TOKEN_PROGRAM_ID,
+                })
+                .instruction()
+            const tx = new Transaction().add(ix);
+
+            if (sendTransaction) {
+                const signature = await sendTransaction(tx, this.connection);
+                console.log(`txhash: ${signature}`);
+                await this.connection.confirmTransaction(signature, "processed");
+                return signature.hash;
+            } else {
+                const txId = await sendAndConfirmTransaction(this.connection, tx, [keypair as anchor.web3.Signer]);
+                console.log(`txhash: ${txId}`);
+                return txId;
+            }
+        } catch (err) {
+            console.log(err);
+            throw err;
         }
     }
 }

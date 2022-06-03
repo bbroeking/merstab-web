@@ -3,26 +3,41 @@ import React, { useEffect, useState } from 'react'
 import styles from '../styles/VaultDepositsInfo.module.css';
 import Image from 'next/image';
 import * as anchor from '@project-serum/anchor';
-import { MerstabClient, Wallet } from '../protocol/merstab';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useMerstab } from '../contexts/merstab';
+import { PublicKey } from '@solana/web3.js';
 
 export const VAULT_CAPACITY = 100;
-const VaultDepositsInfo = () => {
-    const connection = useConnection();
-    const wallet = useWallet();
-    const [merstabClient, setMerstabClient] = useState<MerstabClient>();
-    const [vaultValue, setVaultValue] = useState<number>(0);
+export interface VaultDepositsInfoProps {
+    vault: PublicKey
+}
+
+const VaultDepositsInfo = (props: VaultDepositsInfoProps) => {
+    const { client } = useMerstab();
+    const [vaultDeposits, setVaultDeposits] = useState<number>(0);
 
     useEffect(() => {
-        const setupClient = async () => {
-            const provider = new anchor.Provider(connection.connection, wallet as Wallet, anchor.Provider.defaultOptions());
-            const client = await MerstabClient.connect(provider, true);
-            const vaultValue = await client.getVaultValue();
-            setMerstabClient(client);
-            setVaultValue(vaultValue);
+        if (!client) return;
+        const fetchBalances = async () => {
+            try {
+                const vaultDepositTokenAccount = await client.getVaultDepositAccount(props.vault);
+                if (vaultDepositTokenAccount) {
+                    const balance = await client.getTokenAccountBalance(vaultDepositTokenAccount.address);
+                    if (balance?.value?.uiAmount) {
+                        console.log(balance?.value?.uiAmount)
+                        setVaultDeposits(balance?.value?.uiAmount);
+                    } else {
+                        setVaultDeposits(0);
+                    }
+                } else {
+                    setVaultDeposits(0);
+                }    
+            } catch (err) {
+                console.log(err);
+            }
         }
-        setupClient();
-    }, []);
+        fetchBalances();
+    }, [client]);
 
     return (
         <div className={styles.vaultDepositInfo}>
@@ -37,14 +52,14 @@ const VaultDepositsInfo = () => {
             <Col className={styles.vaultDepositsStatus}>
                 <Row style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 8}}>
                     <span className={styles.depositInfo}>CURRENT VAULT DEPOSITS</span>
-                    <span className={styles.depositInfo}>{vaultValue} USDC</span>
+                    <span className={styles.depositInfo}>{vaultDeposits} USDC</span>
                 </Row>
                 <Row>
                     <Progress 
                         strokeColor='#DC5355' 
                         strokeLinecap='square' 
                         trailColor='#1A1A1A'
-                        percent={(vaultValue / VAULT_CAPACITY ) * 100} 
+                        percent={(vaultDeposits / VAULT_CAPACITY ) * 100} 
                         showInfo={false} />
                 </Row>
                 <Row style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8}}>

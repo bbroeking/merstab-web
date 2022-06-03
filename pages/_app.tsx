@@ -15,6 +15,7 @@ import { AppProps } from 'next/app';
 import { FC, useMemo } from 'react';
 import AppLayout from '../components/AppLayout';
 import { EthereumProviderProvider } from '../contexts/EthereumProviderContext';
+import { MerstabProvider } from '../contexts/merstab';
 
 // Use require instead of import since order matters
 require('@solana/wallet-adapter-react-ui/styles.css');
@@ -32,21 +33,6 @@ export const civicEnv = {
         stage: 'preprod',
     }
 };
-
-// Civic location check if needed
-// function Gateway({ children = null as any }) {
-//     const wallet = useWallet();
-//     const { gatekeeperNetwork, stage, clusterUrl } = civicEnv.test;
-//     return (
-//         <GatewayProvider
-//             wallet={wallet as SolanaWalletAdapter}
-//             gatekeeperNetwork={gatekeeperNetwork}
-//             stage={stage}
-//             clusterUrl={clusterUrl}>
-//                 {children}
-//         </GatewayProvider>
-//     )
-// }
 
 const App: FC<AppProps> = ({ Component, pageProps }) => {
     // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
@@ -72,21 +58,19 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
     );
 
     return (
-        <EthereumProviderProvider>
-            <ConnectionProvider endpoint={endpoint}>
-                <WalletProvider wallets={wallets} autoConnect>
-                    <WalletModalProvider>
-                        {/* <Gateway> */}
+        <ConnectionProvider endpoint={endpoint}>
+            <WalletProvider wallets={wallets} autoConnect>
+                <WalletModalProvider>
+                    <MerstabProvider env={network}>
                         <AppLayout>
                             <Component>
                                 {pageProps}
                             </Component>
                         </AppLayout>
-                        {/* </Gateway> */}
-                    </WalletModalProvider>
-                </WalletProvider>
-            </ConnectionProvider>
-        </EthereumProviderProvider>
+                    </MerstabProvider>
+                </WalletModalProvider>
+            </WalletProvider>
+        </ConnectionProvider>
     );
 };
 
