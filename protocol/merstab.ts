@@ -8,7 +8,7 @@ export interface VaultMetadata {
     manager: PublicKey,
     mint: PublicKey,
     name: string,
-    limit: number,
+    limit: anchor.BN,
 }
 
 /**
@@ -29,7 +29,7 @@ export class MerstabClient {
         const program = new anchor.Program(idl as any, MerstabClient.MERSTAB_ID, provider);
         return new MerstabClient(program, network);
     }
-    static MERSTAB_ID = new PublicKey("CJiz6gsuyCpMAuDpnP8vdTuKRp7Nuf3KJkgdTxeiKFup");
+    static MERSTAB_ID = new PublicKey("AQPDVpAsDtd8cfXVjrUEKrhchF4cYwST2wyq3tJa82ci");
     static MANGO_OWNER_PDA_SEED = 'mango_owner_pda_seed';
     static STAKED_TOKENS_PDA_SEED = 'staked_token_mint_authority';
     static VAULT_SEED = 'vault-seed';
@@ -151,7 +151,7 @@ export class MerstabClient {
             console.log(`Found token account existing for mint: ${mUSDCStakerAccount.toString()}`);
         } catch (err) {
             console.log(err);
-            console.log(`Could not find token account ${mUSDCStakerAccount.toString()}`);
+            console.log(`Could not find token account for mint ${merstabUSDCMint.toString()} and wallet ${wallet.toString()}`);
             console.log(`Creating token account ${mUSDCStakerAccount.toString()}`);
 
             const ataIx = createAssociatedTokenAccountInstruction(

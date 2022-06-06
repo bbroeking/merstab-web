@@ -1,10 +1,10 @@
 import { PublicKey } from "@solana/web3.js";
 
 // NOTE THIS EXAMPLE'S LIMIT IS TOO LOW TO WORK 
-export const depositMint = new PublicKey("BNH9xMad6Gh3qxGPbkwKE221gepfuUPMGs9XLGpVeBmv");
-export const depositMintDecimals = 9;
-export const mTokenMint = new PublicKey("GmtrLLe3p8zNfdQgtjcJUYAWKoYoVuh9swPjAfiBAB1A");    
-export const vault = new PublicKey("56gmTG16aiLocahaREBnkTJypTfJEmSxzvzy5eF46jWM");
+export const depositMint = new PublicKey("8FRFC6MoGGkMFQwngccyu69VnYbzykGeez7ignHVAFSN");
+export const depositMintDecimals = 6;
+export const mTokenMint = new PublicKey("4R3o8zz9uq917ATgDKd4rTRSZu87b3V8fhcmirLMZmLg");    
+export const vault = new PublicKey("HGsoCGL13W13F67fdSs17Tv36ysovaxw62M3AxQxE2N8");
 
 export class DevnetPerp {
     static get depositMint() {
