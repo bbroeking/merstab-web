@@ -1,5 +1,5 @@
 {
-    "version": "0.0.0",
+    "version": "0.1.0",
     "name": "merstab_protocol",
     "instructions": [{
             "name": "initialize",
@@ -1512,6 +1512,43 @@
             }
         },
         {
+            "name": "ErrorCode",
+            "type": {
+                "kind": "enum",
+                "variants": [{
+                        "name": "AccountNotMutable"
+                    },
+                    {
+                        "name": "UnsupportedKind"
+                    },
+                    {
+                        "name": "ProductStrikeUninitialized"
+                    },
+                    {
+                        "name": "InvalidProductMarketKey"
+                    },
+                    {
+                        "name": "MarketNotLive"
+                    },
+                    {
+                        "name": "ProductDirty"
+                    },
+                    {
+                        "name": "InvalidOptionKind"
+                    },
+                    {
+                        "name": "OrderInvalid"
+                    },
+                    {
+                        "name": "StakeMintMismatch"
+                    },
+                    {
+                        "name": "OverStakeLimit"
+                    }
+                ]
+            }
+        },
+        {
             "name": "Side",
             "type": {
                 "kind": "enum",
@@ -1667,55 +1704,7 @@
             }
         }
     ],
-    "errors": [{
-            "code": 300,
-            "name": "AccountNotMutable",
-            "msg": "Account not mutable"
-        },
-        {
-            "code": 301,
-            "name": "UnsupportedKind",
-            "msg": "Unsupported kind"
-        },
-        {
-            "code": 302,
-            "name": "ProductStrikeUninitialized",
-            "msg": "Product strike uninitialized"
-        },
-        {
-            "code": 303,
-            "name": "InvalidProductMarketKey",
-            "msg": "Invalid product market key"
-        },
-        {
-            "code": 304,
-            "name": "MarketNotLive",
-            "msg": "Market not live"
-        },
-        {
-            "code": 305,
-            "name": "ProductDirty",
-            "msg": "Product dirty"
-        },
-        {
-            "code": 306,
-            "name": "InvalidOptionKind",
-            "msg": "Invalid option kind, must be Call or Put"
-        },
-        {
-            "code": 307,
-            "name": "OrderInvalid",
-            "msg": "the order submitted is invalid"
-        },
-        {
-            "code": 308,
-            "name": "StakeMintMismatch",
-            "msg": "the stake mint does not match"
-        },
-        {
-            "code": 309,
-            "name": "OverStakeLimit",
-            "msg": "stake is over vault limits"
-        }
-    ]
+    "metadata": {
+        "address": "AQPDVpAsDtd8cfXVjrUEKrhchF4cYwST2wyq3tJa82ci"
+    }
 }
