@@ -4,8 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Col, Progress, Row } from 'antd';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { VAULT_CAPACITY } from './VaultDepositsInfo';
-import { MerstabClient } from '../protocol/merstab';
+import { MerstabClient, VaultMetadata } from '../protocol/merstab';
 import { PublicKey } from '@solana/web3.js';
 import { useMerstab } from '../contexts/merstab';
 import * as anchor from '@project-serum/anchor';
@@ -19,11 +18,29 @@ export interface VaultCardProps {
 
 const VaultCard = (props: VaultCardProps) => {
     const wallet = useWallet();
+
     const [availableDepositToken, setAvailableDepositToken] = useState<number>(0);
     const [vaultDeposits, setVaultDeposits] = useState<number>(0);
+    const [vaultDecimals, setVaultDecimals] = useState<number>(0);
+
     const [mTokenMint, setMToken] = useState<number>(0);
+    const [vaultMetadata, setVaultMetadata] = useState<VaultMetadata>({
+        manager: PublicKey.default,
+        mint: PublicKey.default,
+        name: "",
+        limit: new anchor.BN(0),
+    } as VaultMetadata);
 
     const { client } = useMerstab();
+
+    const [vaultBar, setVaultBar] = useState<number>(0);
+    const [vaultCap, setVaultCap] = useState<number>(0);
+
+    useEffect(() => {
+        const bar = (vaultDeposits * 10 ** vaultDecimals / vaultMetadata.limit.toNumber()) * 100;
+        setVaultBar(bar);
+        setVaultCap(vaultMetadata.limit.toNumber() / 10 ** vaultDecimals);
+    }, [vaultDeposits, vaultDecimals, vaultMetadata])
 
     const fetchBalances = useCallback(async () => {
         if (!client || !wallet || !wallet.publicKey) {
@@ -38,14 +55,19 @@ const VaultCard = (props: VaultCardProps) => {
                 if (balance?.value?.uiAmount) {
                     console.log(balance?.value?.uiAmount)
                     setAvailableDepositToken(balance?.value?.uiAmount);
+                    setVaultDecimals(balance?.value?.decimals);
                 } else {
                     setAvailableDepositToken(0);
                 }
             } else {
                 setAvailableDepositToken(0);
             }
+        } catch (e) {
+            console.log('Error fetching deposit token balances: ', e);
+            setAvailableDepositToken(0);
+        }
 
-
+        try {
             const vaultDepositTokenAccount = await client.getVaultDepositAccount(props.vault);
             if (vaultDepositTokenAccount) {
                 const balance = await client.getTokenAccountBalance(vaultDepositTokenAccount.address);
@@ -58,7 +80,12 @@ const VaultCard = (props: VaultCardProps) => {
             } else {
                 setVaultDeposits(0);
             }
+        } catch (e) {
+            console.log('Error fetching vault deposit token balances: ', e);
+            setVaultDeposits(0);
+        }
 
+        try {
             const merstabDepositTokenAccount = await client.getMTokenAccount(props.mTokenMint, wallet.publicKey);
             console.log(`vault deposits: ${merstabDepositTokenAccount.address}`);
 
@@ -72,18 +99,35 @@ const VaultCard = (props: VaultCardProps) => {
             } else {
                 setMToken(0);
             }
-
-        } catch (err) {
-            console.log('Error fetching balances: ', err);
-            setAvailableDepositToken(0);
-            setVaultDeposits(0);
+        } catch (e) {
+            console.log('Error fetching merstab deposit token balances: ', e);
             setMToken(0);
         }
     }, [client, props.depositMint, props.mTokenMint]);
 
     useEffect(() => {
         fetchBalances();
-    }, [client]);
+
+        const fetchVault = async () => {
+            if (!client || !wallet || !wallet.publicKey) {
+                console.log(`One of the following are undefined: ${client}, ${wallet}`);
+                return
+            };
+
+            try {
+                const vault = await client.getVaultData(props.vault);
+                if (vault) {
+                    setVaultMetadata(vault as VaultMetadata);
+                    console.log(vault);
+                } else {
+                    console.log('No vault account');
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        fetchVault();
+    }, [client, fetchBalances, props.vault, wallet]);
 
     return (
         <Link href='/vaults/DEVNETPERP'>
@@ -118,12 +162,12 @@ const VaultCard = (props: VaultCardProps) => {
                             strokeColor='#D74B5E'
                             strokeLinecap='square'
                             trailColor='#474747'
-                            percent={(vaultDeposits / VAULT_CAPACITY) * 100}
+                            percent={vaultBar}
                             showInfo={false} />
                     </Row>
                     <Row style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8 }}>
                         <span>Capacity</span>
-                        <span>{VAULT_CAPACITY} USDC</span>
+                        <span>{vaultCap} USDC</span>
                     </Row>
                 </Col>
 
