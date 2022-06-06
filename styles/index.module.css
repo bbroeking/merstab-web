@@ -44,6 +44,10 @@
     color: #FFFFFF;
 }
 
+.contactUsButton:hover {
+    opacity: 1;
+}
+
 .yieldButton:hover {
     opacity: 1;
 }
@@ -182,7 +186,7 @@
 .flexColumnProducts {
     display: flex;
     flex-direction: column;
-    width: 70%;
+    width: 90%;
     justify-content: center;
     align-items: center;
 }
@@ -280,7 +284,7 @@
     font-size: 60px;
     text-overflow: wrap;
     text-align: center;
-    width: 70%;
+    width: 90%;
     padding-bottom: 20px;
     color: #FFF;
 }
@@ -297,7 +301,7 @@
 
 .ourProductsSection {
     display: flex;
-    width: 70%;
+    width: 90%;
     justify-content: space-between;
 }
 
@@ -313,7 +317,7 @@
 
 .text .btcPerpDescription {
     align-self: flex-start;
-    width: 70%;
+    width: 90%;
 }
 
 .missionWrapper {

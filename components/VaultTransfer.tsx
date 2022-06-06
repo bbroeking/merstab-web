@@ -1,69 +1,90 @@
 import { Button, Col, Row } from 'antd';
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styles from '../styles/VaultTransfer.module.css';
 import Image from 'next/image';
-import { MerstabClient, Wallet } from '../protocol/merstab';
-import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import * as anchor from '@project-serum/anchor';
-import { AccountInfo, AccountLayout as TokenAccountLayout, u64 } from '@solana/spl-token';
-import { BN } from '@project-serum/anchor';
 import { toast } from 'react-toastify';
 import WormholeDeposit from './WormholeDeposit';
+import { PublicKey } from '@solana/web3.js';
+import { useMerstab } from '../contexts/merstab';
 
-const VaultTransfer = () => {
+export interface VaultTransferProps {
+    depositMint: PublicKey;
+    depositMintDecimals: number;
+    mTokenMint: PublicKey;
+    vault: PublicKey;
+}
+
+const VaultTransfer = (props: VaultTransferProps) => {
     const [amount, setAmount] = useState(0);
     const [depositActive, setDepositActive] = useState<boolean>(true);
-    const [position, setPosition] = useState(0);
-    const [walletBalance, setWalletBalance] = useState(0);
-    const [merstabClient, setMerstabClient] = useState<MerstabClient>();
-    // const { gatewayStatus, gatewayToken } = useGateway();
-    const connection = useConnection();
     const wallet = useWallet();
 
-    const setupClient = async () => {
-        const provider = new anchor.Provider(connection.connection, wallet as Wallet, anchor.Provider.defaultOptions());
-        const client = await MerstabClient.connect(provider, true);
-        setMerstabClient(client);
-    }
-
-    useEffect(() => {
-        if (!wallet) {
-            console.log("anchor wallet undefined")
-        }
-        setupClient();
-    }, [wallet]);
+    const { client } = useMerstab();
+    const [availableDepositToken, setAvailableDepositToken] = useState<number>(0);
+    const [vaultDeposits, setVaultDeposits] = useState<number>(0);
+    const [mTokenMint, setMToken] = useState<number>(0);
 
     const fetchBalances = async () => {
-        if (!merstabClient || !wallet || !wallet.publicKey) return;
-        const tokenAccount = await merstabClient.getTokenAccount(wallet.publicKey);
-        const stakedTokenAccount = await merstabClient.getStakedTokenAccount(wallet.publicKey);
-        const tokenAccountData = await connection.connection.getAccountInfo(tokenAccount);
-        const stakedTokenAccountData = await connection.connection.getAccountInfo(stakedTokenAccount);
+        if (!client || !wallet || !wallet.publicKey) {
+            console.log(`One of the following are undefined: ${client}, ${wallet}`);
+            return
+        };
 
         try {
-            if (tokenAccountData) {
-                const parsedTokenAccountData = TokenAccountLayout.decode(tokenAccountData?.data) as AccountInfo;
-                setWalletBalance(new BN(parsedTokenAccountData.amount, undefined, "le").toNumber());
+            const depositTokenAccount = await client.getTokenAccount(props.depositMint, wallet.publicKey);
+            if (depositTokenAccount) {
+                const balance = await client.getTokenAccountBalance(depositTokenAccount.address);
+                if (balance?.value?.uiAmount) {
+                    console.log(balance?.value?.uiAmount)
+                    setAvailableDepositToken(balance?.value?.uiAmount);
+                } else {
+                    setAvailableDepositToken(0);
+                }
             } else {
-                setWalletBalance(0);
+                setAvailableDepositToken(0);
             }
-            if (stakedTokenAccountData) {
-                const parsedStakedTokenAccountData = TokenAccountLayout.decode(stakedTokenAccountData?.data) as AccountInfo;
-                setPosition(new BN(parsedStakedTokenAccountData.amount, undefined, "le").toNumber());
+
+
+            const vaultDepositTokenAccount = await client.getVaultDepositAccount(props.vault);
+            if (vaultDepositTokenAccount) {
+                const balance = await client.getTokenAccountBalance(vaultDepositTokenAccount.address);
+                if (balance?.value?.uiAmount) {
+                    console.log(balance?.value?.uiAmount)
+                    setVaultDeposits(balance?.value?.uiAmount);
+                } else {
+                    setVaultDeposits(0);
+                }
             } else {
-                setPosition(0);
+                setVaultDeposits(0);
+            }
+
+            const merstabDepositTokenAccount = await client.getMTokenAccount(props.mTokenMint, wallet.publicKey);
+            console.log(`vault deposits: ${merstabDepositTokenAccount.address}`);
+
+            if (merstabDepositTokenAccount) {
+                const balance = await client.getTokenAccountBalance(merstabDepositTokenAccount.address);
+                if (balance?.value?.uiAmount) {
+                    setMToken(balance?.value?.uiAmount);
+                } else {
+                    setMToken(0);
+                }
+            } else {
+                setMToken(0);
             }
 
         } catch (err) {
             console.log('Error fetching balances: ', err);
-            setPosition(0);
-            setWalletBalance(0);
+            setAvailableDepositToken(0);
+            setVaultDeposits(0);
+            setMToken(0);
         }
-    }
-
+    };
+    
     useEffect(() => {
         fetchBalances()
-    }, [merstabClient, wallet])
+    }, [client, wallet])
 
     const onInputChange = (event: any) => {
         const amount = parseFloat(event.target.value);
@@ -72,35 +93,47 @@ const VaultTransfer = () => {
     }
     const onTabToggle = (toggle: boolean) => {
         setDepositActive(toggle);
+        setAmount(0);
     }
 
     const onInteract = async () => {
-        if (!wallet || !wallet.publicKey || !merstabClient) {
+        if (!wallet || !wallet.publicKey || !client) {
             console.log('Error establishing connection');
-            console.log({ wallet, merstabClient });
+            console.log({ wallet, client });
             console.log('Attempting to establish connection to wallet');
             await wallet.connect();
-            await setupClient();
 
-            if (!wallet || !wallet.publicKey || !merstabClient) return;
+            if (!wallet || !wallet.publicKey || !client) return;
         };
         if (depositActive) {
-            await merstabClient.stake(new anchor.BN(amount, undefined, "le"), wallet.publicKey); //gatewayToken?.publicKey, civicEnv.test.gatekeeperNetwork
-            toast.success('Deposit Successful', {
-                theme: "dark"
-            });
+            const programAmount = amount * 10 ** props.depositMintDecimals;
+            try {
+                await client.stake(new anchor.BN(programAmount), wallet.publicKey, props.vault, props.depositMint, null, wallet.sendTransaction);
+                toast.success('Deposit Successful', {
+                    theme: "dark"
+                });
+            } catch (err) {
+                console.log(err);
+                toast.error(`Error depositing ${amount} into vault: ${props.vault.toString().substring(props.vault.toString().length - 4)}`, { theme: "dark" });
+            }
         }
         else {
-            await merstabClient.unstake(new anchor.BN(amount, undefined, "le"), wallet.publicKey);
-            toast.success('Withdrawal Successful', {
-                theme: "dark"
-            });
+            const programAmount = amount * 10 ** props.depositMintDecimals;
+            try {
+                await client.unstake(new anchor.BN(programAmount), wallet.publicKey, props.vault, props.depositMint, null, wallet.sendTransaction);
+                toast.success('Withdrawal Successful', {
+                    theme: "dark"
+                });    
+            } catch (err) {
+                console.log(err);
+                toast.error(`Error withdrawing ${amount} from vault: ${props.vault.toString().substring(props.vault.toString().length - 4)}`, { theme: "dark" });
+            }
         }
         fetchBalances();
     }
 
     const setMax = () => {
-        const max = depositActive ? walletBalance : position;
+        const max = depositActive ? availableDepositToken : mTokenMint;
         setAmount(max);
     }
 
@@ -115,10 +148,6 @@ const VaultTransfer = () => {
                         onClick={() => onTabToggle(false)}
                         className={`${styles.transactionButton} ${!depositActive ? styles.active : ""}`}>Withdraw</Button>
                 </Row>
-                <Row className={styles.positionRow}>
-                    <Col>Your position:</Col>
-                    <Col>{position} USDC</Col>
-                </Row>
                 <Row>
                     <div className={styles.valueInputRow}>
                         <Button onClick={setMax} className={styles.maxButton}>MAX</Button>
@@ -127,9 +156,9 @@ const VaultTransfer = () => {
                         <div className={styles.spacer}></div>
                     </div>
                 </Row>
-                <Row className={`${styles.walletBalanceRow} ${styles.walletBalance}`}>
+                <Row className={`${styles.availableDepositTokenRow} ${styles.availableDepositToken}`}>
                     <Row>Wallet balance: </Row>
-                    <Row><span>{walletBalance} USDC</span></Row>
+                    <Row><span>{depositActive ? availableDepositToken : mTokenMint} USDC</span></Row>
                 </Row>
                 <Row className={styles.displayRow}>
                     <Button
@@ -139,9 +168,9 @@ const VaultTransfer = () => {
                         {depositActive ? "DEPOSIT" : "WITHDRAW"}
                     </Button>
                 </Row>
-                <Row className={styles.displayRow}>
+                {/* <Row className={styles.displayRow}>
                     <WormholeDeposit depositAmount={amount}></WormholeDeposit>
-                </Row>
+                </Row> */}
                 <Row className={styles.bottomRow}>
                     <span className={styles.fundsProcessingRow}>Funds are deposited onto Mango Markets at 12:00AM UTC.</span>
                 </Row>

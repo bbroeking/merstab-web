@@ -2,11 +2,10 @@
     display: flex;
     flex: 0 0 100%;
     bottom: 0;
-    height: 55px;
     align-items: center;
     width: 100%;
     justify-content: space-between;
-    padding: 32px;
+    padding: 0px 20px;
     border-top: 1px solid #474747;
     position: relative;
     z-index: 5;

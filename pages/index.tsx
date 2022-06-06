@@ -44,7 +44,7 @@ const Home: NextPage = () => {
                                 <h1 className={styles.perpHeader}>BTC-PERP</h1>
                                 <div className={styles.btcPerpDescription}>Generates yield through deploying a market making strategy on Mango Markets</div>
                             </div>
-                            <Link href={'/vault'}>
+                            <Link href={'/vaults/DEVNETPERP'}>
                                 <div className={styles.marketMakingVault}>
                                     <div className={styles.vaultHeader} style={{ alignSelf: 'center', paddingBottom: 20 }}>Market Making Vault</div>
                                     <Image src="/svg/btcperp.svg" alt='bitcoin and usdc pair' width={240} height={240}></Image>
