@@ -112,7 +112,7 @@ const VaultTransfer = (props: VaultTransferProps) => {
     useEffect(() => {
         fetchBalances();
         fetchVault();
-    }, [client, wallet])
+    }, [client, wallet, fetchBalances, fetchVault])
 
     const onInputChange = (event: any) => {
         const amount = parseFloat(event.target.value);
@@ -180,7 +180,7 @@ const VaultTransfer = (props: VaultTransferProps) => {
                     <div className={styles.valueInputRow}>
                         <Button onClick={setMax} className={styles.maxButton}>MAX</Button>
                         <input type='number' className={styles.amountField} value={amount} onChange={onInputChange}></input>
-                        <Image className={styles.currencyIcon} src='/svg/usdc.svg' width={30} height={30}></Image>
+                        <Image alt="" className={styles.currencyIcon} src='/svg/usdc.svg' width={30} height={30}></Image>
                         <div className={styles.spacer}></div>
                     </div>
                 </Row>

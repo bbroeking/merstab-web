@@ -37,7 +37,7 @@ const NavBar = () => {
                 {router.pathname === "/" ?
                     <Link href={'/overview'}><Button className={styles.launchApp}>LAUNCH APP</Button></Link> :
                     <WalletMultiButton
-                        startIcon={<img src="/svg/wallet.svg" alt="wallet icon" height={8} width={8} />}
+                        startIcon={<Image src="/svg/wallet.svg" alt="wallet icon" height={8} width={8} />}
                         className={styles.walletButton}>
                         {wallet.connected ?
                             `...${wallet.publicKey?.toString().slice(-4)}` :

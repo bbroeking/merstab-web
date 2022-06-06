@@ -127,7 +127,7 @@ const VaultCard = (props: VaultCardProps) => {
             }
         }
         fetchVault();
-    }, [client]);
+    }, [client, fetchBalances, props.vault, wallet]);
 
     return (
         <Link href='/vaults/DEVNETPERP'>

@@ -55,7 +55,7 @@ const WormholeDeposit = (props: WormholeDepositProps) => {
 
     useEffect(() => {
         eth.connect();
-    }, []);
+    }, [eth]);
 
     const onOrcaSwap = async () => {
         if (!wallet.publicKey) return;
