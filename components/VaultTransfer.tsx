@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import WormholeDeposit from './WormholeDeposit';
 import { PublicKey } from '@solana/web3.js';
 import { useMerstab } from '../contexts/merstab';
+import { MerstabClient, VaultMetadata } from '../protocol/merstab';
 
 export interface VaultTransferProps {
     depositMint: PublicKey;
@@ -25,6 +26,7 @@ const VaultTransfer = (props: VaultTransferProps) => {
     const [availableDepositToken, setAvailableDepositToken] = useState<number>(0);
     const [vaultDeposits, setVaultDeposits] = useState<number>(0);
     const [mTokenMint, setMToken] = useState<number>(0);
+    const [vaultMetadata, setVaultMetadata] = useState<VaultMetadata>({} as VaultMetadata);
 
     const fetchBalances = async () => {
         if (!client || !wallet || !wallet.publicKey) {
@@ -45,8 +47,12 @@ const VaultTransfer = (props: VaultTransferProps) => {
             } else {
                 setAvailableDepositToken(0);
             }
+        } catch (e) {
+            console.log('Error fetching deposit token balances: ', e);
+            setAvailableDepositToken(0);
+        }
 
-
+        try {
             const vaultDepositTokenAccount = await client.getVaultDepositAccount(props.vault);
             if (vaultDepositTokenAccount) {
                 const balance = await client.getTokenAccountBalance(vaultDepositTokenAccount.address);
@@ -59,7 +65,12 @@ const VaultTransfer = (props: VaultTransferProps) => {
             } else {
                 setVaultDeposits(0);
             }
+        } catch (e) {
+            console.log('Error fetching vault deposit token balances: ', e);
+            setVaultDeposits(0);
+        }
 
+        try {
             const merstabDepositTokenAccount = await client.getMTokenAccount(props.mTokenMint, wallet.publicKey);
             console.log(`vault deposits: ${merstabDepositTokenAccount.address}`);
 
@@ -73,17 +84,34 @@ const VaultTransfer = (props: VaultTransferProps) => {
             } else {
                 setMToken(0);
             }
-
-        } catch (err) {
-            console.log('Error fetching balances: ', err);
-            setAvailableDepositToken(0);
-            setVaultDeposits(0);
+        } catch (e) {
+            console.log('Error fetching merstab deposit token balances: ', e);
             setMToken(0);
         }
     };
-    
+
+    const fetchVault = async () => {
+        if (!client || !wallet || !wallet.publicKey) {
+            console.log(`One of the following are undefined: ${client}, ${wallet}`);
+            return
+        };
+
+        try {
+            const vault = await client.getVaultData(props.vault);
+            if (vault) {
+                setVaultMetadata(vault as VaultMetadata);
+                console.log(vault);
+            } else {
+                console.log('No vault account');
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     useEffect(() => {
-        fetchBalances()
+        fetchBalances();
+        fetchVault();
     }, [client, wallet])
 
     const onInputChange = (event: any) => {
@@ -123,7 +151,7 @@ const VaultTransfer = (props: VaultTransferProps) => {
                 await client.unstake(new anchor.BN(programAmount), wallet.publicKey, props.vault, props.depositMint, null, wallet.sendTransaction);
                 toast.success('Withdrawal Successful', {
                     theme: "dark"
-                });    
+                });
             } catch (err) {
                 console.log(err);
                 toast.error(`Error withdrawing ${amount} from vault: ${props.vault.toString().substring(props.vault.toString().length - 4)}`, { theme: "dark" });
