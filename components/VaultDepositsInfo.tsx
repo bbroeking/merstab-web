@@ -63,7 +63,7 @@ const VaultDepositsInfo = (props: VaultDepositsInfoProps) => {
         }
         fetchVault();
         fetchBalances();
-    }, [client]);
+    }, [client, props.vault]);
 
 
     useEffect(() => {
